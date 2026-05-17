@@ -14,6 +14,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { BranchProvider } from "@/contexts/BranchContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { OrderProvider } from "@/contexts/OrderContext";
@@ -36,13 +37,28 @@ function RootLayoutNav() {
           fontSize: 18,
         },
         headerBackTitle: "Back",
+        contentStyle: { backgroundColor: colors.background },
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
+        name="login"
+        options={{
+          headerShown: false,
+          presentation: "modal",
+        }}
+      />
+      <Stack.Screen
         name="branch-select"
         options={{
           title: "Select Branch",
+          presentation: "modal",
+        }}
+      />
+      <Stack.Screen
+        name="add-address"
+        options={{
+          title: "Add Address",
           presentation: "modal",
         }}
       />
@@ -91,17 +107,19 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <CartProvider>
-            <BranchProvider>
-              <OrderProvider>
-                <GestureHandlerRootView>
-                  <KeyboardProvider>
-                    <RootLayoutNav />
-                  </KeyboardProvider>
-                </GestureHandlerRootView>
-              </OrderProvider>
-            </BranchProvider>
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <BranchProvider>
+                <OrderProvider>
+                  <GestureHandlerRootView>
+                    <KeyboardProvider>
+                      <RootLayoutNav />
+                    </KeyboardProvider>
+                  </GestureHandlerRootView>
+                </OrderProvider>
+              </BranchProvider>
+            </CartProvider>
+          </AuthProvider>
         </QueryClientProvider>
       </ErrorBoundary>
     </SafeAreaProvider>

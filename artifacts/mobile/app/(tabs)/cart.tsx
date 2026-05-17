@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { EmptyState } from "@/components/EmptyState";
+import { useAuth } from "@/contexts/AuthContext";
 import { CartItem, useCart } from "@/contexts/CartContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -20,16 +21,18 @@ const TAX_RATE = 0.17;
 
 function CartItemRow({ item }: { item: CartItem }) {
   const colors = useColors();
-  const { updateQuantity, removeItem } = useCart();
+  const { updateQuantity } = useCart();
 
   return (
     <View style={[styles.itemRow, { borderBottomColor: colors.border }]}>
-      <View style={[styles.itemColorDot, { backgroundColor: colors.lightGreen }]}>
+      <View style={[styles.itemIcon, { backgroundColor: colors.lightGreen }]}>
         <Feather name="layers" size={16} color={colors.primary} />
       </View>
       <View style={styles.itemInfo}>
-        <Text style={[styles.itemName, { color: colors.foreground }]}>{item.name}</Text>
-        <Text style={[styles.itemPrice, { color: colors.primary }]}>
+        <Text style={[styles.itemName, { color: colors.foreground }]} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={[styles.itemUnitPrice, { color: colors.mutedForeground }]}>
           Rs. {item.price.toLocaleString()} each
         </Text>
       </View>
@@ -39,12 +42,18 @@ function CartItemRow({ item }: { item: CartItem }) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             updateQuantity(item.cartId, item.quantity - 1);
           }}
-          style={[styles.qBtn, { backgroundColor: item.quantity === 1 ? "#FFEBEE" : colors.border }]}
+          style={[
+            styles.qBtn,
+            {
+              backgroundColor: item.quantity === 1 ? "#FEE2E2" : colors.muted,
+              borderColor: item.quantity === 1 ? "#FECACA" : colors.border,
+            },
+          ]}
         >
           <Feather
             name={item.quantity === 1 ? "trash-2" : "minus"}
-            size={13}
-            color={item.quantity === 1 ? colors.accent : colors.foreground}
+            size={12}
+            color={item.quantity === 1 ? "#DC2626" : colors.mutedForeground}
           />
         </TouchableOpacity>
         <Text style={[styles.qCount, { color: colors.foreground }]}>{item.quantity}</Text>
@@ -53,11 +62,11 @@ function CartItemRow({ item }: { item: CartItem }) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             updateQuantity(item.cartId, item.quantity + 1);
           }}
-          style={[styles.qBtn, { backgroundColor: colors.accent }]}
+          style={[styles.qBtn, { backgroundColor: colors.accent, borderColor: colors.accent }]}
         >
-          <Feather name="plus" size={13} color="#FFF" />
+          <Feather name="plus" size={12} color="#FFF" />
         </TouchableOpacity>
-        <Text style={[styles.itemTotal, { color: colors.foreground }]}>
+        <Text style={[styles.itemSubtotal, { color: colors.foreground }]}>
           Rs. {(item.price * item.quantity).toLocaleString()}
         </Text>
       </View>
@@ -70,11 +79,13 @@ export default function CartScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { items, total, itemCount, clearCart } = useCart();
+  const { user } = useAuth();
 
   const tax = Math.round(total * TAX_RATE);
   const grandTotal = total + tax;
 
-  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const TAB_BAR_HEIGHT = Platform.OS === "web" ? 84 : 60 + insets.bottom;
+  const FOOTER_HEIGHT = 88 + (Platform.OS === "web" ? 0 : insets.bottom);
 
   if (items.length === 0) {
     return (
@@ -99,7 +110,7 @@ export default function CartScreen() {
         ListHeaderComponent={
           <View style={[styles.listHeader, { borderBottomColor: colors.border }]}>
             <Text style={[styles.itemCountText, { color: colors.mutedForeground }]}>
-              {itemCount} {itemCount === 1 ? "item" : "items"} in cart
+              {itemCount} {itemCount === 1 ? "item" : "items"} in your cart
             </Text>
             <TouchableOpacity
               onPress={() => {
@@ -114,7 +125,6 @@ export default function CartScreen() {
         ListFooterComponent={
           <View style={[styles.summaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.summaryTitle, { color: colors.foreground }]}>Order Summary</Text>
-
             <View style={styles.summaryRow}>
               <Text style={[styles.summaryLabel, { color: colors.mutedForeground }]}>Subtotal</Text>
               <Text style={[styles.summaryValue, { color: colors.foreground }]}>
@@ -127,7 +137,7 @@ export default function CartScreen() {
                 Rs. {tax.toLocaleString()}
               </Text>
             </View>
-            <View style={[styles.divider, { backgroundColor: colors.border }]} />
+            <View style={[styles.totalDivider, { backgroundColor: colors.border }]} />
             <View style={styles.summaryRow}>
               <Text style={[styles.totalLabel, { color: colors.foreground }]}>Total</Text>
               <Text style={[styles.totalValue, { color: colors.primary }]}>
@@ -138,34 +148,48 @@ export default function CartScreen() {
         }
         contentContainerStyle={[
           styles.listContent,
-          { paddingBottom: Platform.OS === "web" ? 160 : 140 + insets.bottom },
+          { paddingBottom: FOOTER_HEIGHT + TAB_BAR_HEIGHT },
         ]}
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Checkout Button */}
+      {/* Checkout Footer — sits above tab bar */}
       <View
         style={[
-          styles.checkoutContainer,
+          styles.checkoutFooter,
           {
             backgroundColor: colors.background,
             borderTopColor: colors.border,
-            paddingBottom: bottomPad + 12,
+            paddingBottom: Platform.OS === "web" ? 100 : insets.bottom + 16,
+            bottom: TAB_BAR_HEIGHT,
           },
         ]}
       >
+        {!user && (
+          <View style={[styles.loginPrompt, { backgroundColor: colors.lightGreen, borderColor: colors.secondary }]}>
+            <Feather name="lock" size={14} color={colors.primary} />
+            <Text style={[styles.loginPromptText, { color: colors.primary }]}>
+              Sign in required to place an order
+            </Text>
+          </View>
+        )}
         <TouchableOpacity
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            if (!user) {
+              router.push("/login");
+              return;
+            }
             router.push("/checkout");
           }}
           style={[styles.checkoutBtn, { backgroundColor: colors.accent }]}
+          activeOpacity={0.85}
         >
-          <Text style={styles.checkoutBtnText}>
-            Proceed to Checkout
+          <Text style={styles.checkoutBtnLabel}>
+            {user ? "Proceed to Checkout" : "Sign In to Checkout"}
           </Text>
-          <View style={styles.checkoutTotal}>
-            <Text style={styles.checkoutTotalText}>Rs. {grandTotal.toLocaleString()}</Text>
+          <View style={styles.checkoutPriceChip}>
+            <Text style={styles.checkoutPriceText}>Rs. {grandTotal.toLocaleString()}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -182,7 +206,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderBottomWidth: 1,
     marginBottom: 4,
   },
@@ -201,10 +225,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     gap: 10,
   },
-  itemColorDot: {
+  itemIcon: {
     width: 44,
     height: 44,
-    borderRadius: 10,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -214,49 +238,50 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_600SemiBold",
     marginBottom: 3,
   },
-  itemPrice: {
+  itemUnitPrice: {
     fontSize: 12,
     fontFamily: "Inter_400Regular",
   },
   itemControls: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 7,
   },
   qBtn: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1,
   },
   qCount: {
-    fontSize: 14,
-    fontFamily: "Inter_600SemiBold",
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
     minWidth: 22,
     textAlign: "center",
   },
-  itemTotal: {
+  itemSubtotal: {
     fontSize: 13,
     fontFamily: "Inter_700Bold",
-    minWidth: 70,
+    minWidth: 72,
     textAlign: "right",
   },
   summaryCard: {
     marginTop: 16,
     borderRadius: 16,
     borderWidth: 1,
-    padding: 16,
+    padding: 18,
   },
   summaryTitle: {
     fontSize: 16,
     fontFamily: "Inter_700Bold",
-    marginBottom: 12,
+    marginBottom: 14,
   },
   summaryRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 10,
   },
   summaryLabel: {
     fontSize: 14,
@@ -266,7 +291,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Inter_500Medium",
   },
-  divider: {
+  totalDivider: {
     height: 1,
     marginVertical: 10,
   },
@@ -278,14 +303,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Inter_700Bold",
   },
-  checkoutContainer: {
+  checkoutFooter: {
     position: "absolute",
-    bottom: 0,
     left: 0,
     right: 0,
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 14,
     borderTopWidth: 1,
+  },
+  loginPrompt: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 10,
+  },
+  loginPromptText: {
+    fontSize: 12,
+    fontFamily: "Inter_500Medium",
   },
   checkoutBtn: {
     flexDirection: "row",
@@ -294,19 +332,24 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 16,
     paddingHorizontal: 20,
+    shadowColor: "#C8102E",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  checkoutBtnText: {
+  checkoutBtnLabel: {
     color: "#FFFFFF",
     fontSize: 16,
     fontFamily: "Inter_700Bold",
   },
-  checkoutTotal: {
-    backgroundColor: "rgba(255,255,255,0.2)",
+  checkoutPriceChip: {
+    backgroundColor: "rgba(255,255,255,0.22)",
     borderRadius: 8,
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
   },
-  checkoutTotalText: {
+  checkoutPriceText: {
     color: "#FFFFFF",
     fontSize: 14,
     fontFamily: "Inter_700Bold",
