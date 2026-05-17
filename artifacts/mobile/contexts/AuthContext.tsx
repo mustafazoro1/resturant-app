@@ -13,7 +13,16 @@ export interface User {
   phone: string;
   email?: string;
   addresses: SavedAddress[];
+  loyaltyPoints: number;
 }
+
+export const LOYALTY_TIERS = [
+  { points: 50, discount: 10, label: "10% off" },
+  { points: 75, discount: 15, label: "15% off" },
+  { points: 100, discount: 25, label: "25% off" },
+] as const;
+
+export const MAX_LOYALTY_POINTS = 100;
 
 interface AuthContextType {
   user: User | null;
@@ -26,6 +35,9 @@ interface AuthContextType {
   removeAddress: (id: string) => Promise<void>;
   setDefaultAddress: (id: string) => Promise<void>;
   defaultAddress: SavedAddress | null;
+  awardPoints: (orderTotal: number) => Promise<number>;
+  redeemPoints: (points: number) => Promise<void>;
+  availableTier: (typeof LOYALTY_TIERS)[number] | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -39,6 +51,9 @@ const AuthContext = createContext<AuthContextType>({
   removeAddress: async () => {},
   setDefaultAddress: async () => {},
   defaultAddress: null,
+  awardPoints: async () => 0,
+  redeemPoints: async () => {},
+  availableTier: null,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -49,7 +64,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.getItem("rfc_user").then((data) => {
       if (data) {
         try {
-          setUser(JSON.parse(data));
+          const parsed = JSON.parse(data) as User;
+          if (typeof parsed.loyaltyPoints !== "number") {
+            parsed.loyaltyPoints = 0;
+          }
+          setUser(parsed);
         } catch {}
       }
       setIsLoading(false);
@@ -65,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = useCallback(async (name: string, phone: string) => {
-    const newUser: User = { name, phone, addresses: [] };
+    const newUser: User = { name, phone, addresses: [], loyaltyPoints: 0 };
     setUser(newUser);
     await persist(newUser);
   }, []);
@@ -135,7 +154,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  // Returns how many points were actually awarded
+  const awardPoints = useCallback(async (orderTotal: number): Promise<number> => {
+    const earned = Math.floor(orderTotal / 100);
+    if (earned <= 0) return 0;
+    let actualAwarded = 0;
+    setUser((prev) => {
+      if (!prev) return prev;
+      const current = prev.loyaltyPoints;
+      const newPoints = Math.min(current + earned, MAX_LOYALTY_POINTS);
+      actualAwarded = newPoints - current;
+      const updated = { ...prev, loyaltyPoints: newPoints };
+      persist(updated);
+      return updated;
+    });
+    return actualAwarded;
+  }, []);
+
+  const redeemPoints = useCallback(async (points: number) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const newPoints = Math.max(0, prev.loyaltyPoints - points);
+      const updated = { ...prev, loyaltyPoints: newPoints };
+      persist(updated);
+      return updated;
+    });
+  }, []);
+
   const defaultAddress = user?.addresses.find((a) => a.isDefault) ?? user?.addresses[0] ?? null;
+
+  const availableTier =
+    user
+      ? ([...LOYALTY_TIERS].reverse().find((t) => (user.loyaltyPoints ?? 0) >= t.points) ?? null)
+      : null;
 
   return (
     <AuthContext.Provider
@@ -150,6 +201,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         removeAddress,
         setDefaultAddress,
         defaultAddress,
+        awardPoints,
+        redeemPoints,
+        availableTier,
       }}
     >
       {children}

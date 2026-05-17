@@ -15,6 +15,7 @@ export interface Order {
   timestamp: number;
   estimatedMinutes: number;
   deliveryAddress?: string;
+  loyaltyDiscount?: number;
 }
 
 interface OrderContextType {
@@ -25,6 +26,7 @@ interface OrderContextType {
     total: number;
     orderType: "dinein" | "takeaway" | "delivery";
     deliveryAddress?: string;
+    loyaltyDiscount?: number;
   }) => Order;
   activeOrder: Order | null;
 }
@@ -91,6 +93,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         timestamp: Date.now(),
         estimatedMinutes,
         deliveryAddress: params.deliveryAddress,
+        loyaltyDiscount: params.loyaltyDiscount,
       };
       setOrders((prev) => [newOrder, ...prev]);
       advanceStatus(orderId, "received");

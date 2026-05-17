@@ -17,6 +17,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { BranchProvider } from "@/contexts/BranchContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { OrderProvider } from "@/contexts/OrderContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -38,51 +39,18 @@ function RootLayoutNav() {
         },
         headerBackTitle: "Back",
         contentStyle: { backgroundColor: colors.background },
+        animation: "ios_from_right",
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="login"
-        options={{
-          headerShown: false,
-          presentation: "modal",
-        }}
-      />
-      <Stack.Screen
-        name="branch-select"
-        options={{
-          title: "Select Branch",
-          presentation: "modal",
-        }}
-      />
-      <Stack.Screen
-        name="add-address"
-        options={{
-          title: "Add Address",
-          presentation: "modal",
-        }}
-      />
-      <Stack.Screen
-        name="item/[id]"
-        options={{
-          title: "",
-          headerTransparent: true,
-          headerTintColor: "#FFFFFF",
-        }}
-      />
-      <Stack.Screen
-        name="checkout"
-        options={{
-          title: "Checkout",
-        }}
-      />
-      <Stack.Screen
-        name="order-confirm"
-        options={{
-          headerShown: false,
-          gestureEnabled: false,
-        }}
-      />
+      <Stack.Screen name="login" options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }} />
+      <Stack.Screen name="branch-select" options={{ title: "Select Branch", presentation: "modal", animation: "slide_from_bottom" }} />
+      <Stack.Screen name="add-address" options={{ title: "Add Address", presentation: "modal", animation: "slide_from_bottom" }} />
+      <Stack.Screen name="item/[id]" options={{ title: "", headerTransparent: true, headerTintColor: "#FFFFFF" }} />
+      <Stack.Screen name="checkout" options={{ title: "Checkout" }} />
+      <Stack.Screen name="order-confirm" options={{ headerShown: false, gestureEnabled: false, animation: "fade" }} />
+      <Stack.Screen name="terms" options={{ title: "Terms & Conditions" }} />
+      <Stack.Screen name="privacy" options={{ title: "Privacy Policy" }} />
     </Stack>
   );
 }
@@ -107,19 +75,21 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <CartProvider>
-              <BranchProvider>
-                <OrderProvider>
-                  <GestureHandlerRootView>
-                    <KeyboardProvider>
-                      <RootLayoutNav />
-                    </KeyboardProvider>
-                  </GestureHandlerRootView>
-                </OrderProvider>
-              </BranchProvider>
-            </CartProvider>
-          </AuthProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <CartProvider>
+                <BranchProvider>
+                  <OrderProvider>
+                    <GestureHandlerRootView>
+                      <KeyboardProvider>
+                        <RootLayoutNav />
+                      </KeyboardProvider>
+                    </GestureHandlerRootView>
+                  </OrderProvider>
+                </BranchProvider>
+              </CartProvider>
+            </AuthProvider>
+          </LanguageProvider>
         </QueryClientProvider>
       </ErrorBoundary>
     </SafeAreaProvider>
