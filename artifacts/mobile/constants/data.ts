@@ -1,0 +1,559 @@
+export interface MenuItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  popular?: boolean;
+  spicy?: boolean;
+  isNew?: boolean;
+  calories?: number;
+}
+
+export interface Category {
+  id: string;
+  label: string;
+  iconName: string;
+}
+
+export interface Branch {
+  id: string;
+  name: string;
+  address: string;
+  area: string;
+  city: string;
+  hours: string;
+  isOpen: boolean;
+  phone: string;
+  distance?: string;
+}
+
+export interface Deal {
+  id: string;
+  title: string;
+  subtitle: string;
+  price: number;
+  originalPrice: number;
+  tag?: string;
+  gradientStart: string;
+  gradientEnd: string;
+}
+
+export const CATEGORIES: Category[] = [
+  { id: "deals", label: "Deals", iconName: "tag" },
+  { id: "chicken", label: "Chicken", iconName: "feather" },
+  { id: "burgers", label: "Burgers", iconName: "circle" },
+  { id: "wraps", label: "Wraps", iconName: "package" },
+  { id: "sides", label: "Sides", iconName: "grid" },
+  { id: "drinks", label: "Drinks", iconName: "droplet" },
+  { id: "desserts", label: "Desserts", iconName: "heart" },
+];
+
+export const DEALS: Deal[] = [
+  {
+    id: "d1",
+    title: "Family Feast",
+    subtitle: "8 pcs crispy chicken + 4 fries + 4 drinks",
+    price: 3499,
+    originalPrice: 4200,
+    tag: "Best Seller",
+    gradientStart: "#0D3B1A",
+    gradientEnd: "#1B5E20",
+  },
+  {
+    id: "d2",
+    title: "Duo Deal",
+    subtitle: "2 pcs chicken + 2 fries + 2 drinks",
+    price: 1649,
+    originalPrice: 2000,
+    tag: "Hot Deal",
+    gradientStart: "#B71C1C",
+    gradientEnd: "#C8102E",
+  },
+  {
+    id: "d3",
+    title: "Student Meal",
+    subtitle: "1 Zinger Burger + fries + drink",
+    price: 899,
+    originalPrice: 1180,
+    tag: "Value",
+    gradientStart: "#1A237E",
+    gradientEnd: "#283593",
+  },
+  {
+    id: "d4",
+    title: "RFC Box Meal",
+    subtitle: "2 pcs chicken + coleslaw + fries + drink",
+    price: 1299,
+    originalPrice: 1600,
+    tag: "New",
+    gradientStart: "#4A148C",
+    gradientEnd: "#6A1B9A",
+  },
+];
+
+export const MENU_ITEMS: MenuItem[] = [
+  // DEALS
+  {
+    id: "deal1",
+    name: "Family Feast",
+    description: "8 pcs crispy chicken + 4 regular fries + 4 drinks. Perfect for the whole family!",
+    price: 3499,
+    category: "deals",
+    popular: true,
+  },
+  {
+    id: "deal2",
+    name: "Duo Deal",
+    description: "2 pcs crispy chicken + 2 regular fries + 2 drinks. Share with a friend!",
+    price: 1649,
+    category: "deals",
+    popular: true,
+  },
+  {
+    id: "deal3",
+    name: "Student Meal",
+    description: "1 RFC Zinger Burger + regular fries + 1 drink. Best value for students.",
+    price: 899,
+    category: "deals",
+    popular: false,
+  },
+  {
+    id: "deal4",
+    name: "RFC Box Meal",
+    description: "2 pcs crispy chicken + coleslaw + fries + drink. The RFC classic combo.",
+    price: 1299,
+    category: "deals",
+    popular: false,
+  },
+  {
+    id: "deal5",
+    name: "Mighty Zinger Meal",
+    description: "2 Zinger Burgers + 2 large fries + 2 drinks. Double the crunch!",
+    price: 2199,
+    category: "deals",
+    popular: false,
+  },
+
+  // CHICKEN
+  {
+    id: "ch1",
+    name: "1 Pc Crispy Chicken",
+    description: "Our signature golden crispy chicken, seasoned with RFC's secret blend of 11 herbs and spices.",
+    price: 480,
+    category: "chicken",
+    popular: true,
+    calories: 350,
+  },
+  {
+    id: "ch2",
+    name: "2 Pc Crispy Chicken",
+    description: "Two golden crispy chicken pieces, perfectly seasoned.",
+    price: 850,
+    category: "chicken",
+    popular: true,
+    calories: 700,
+  },
+  {
+    id: "ch3",
+    name: "3 Pc Crispy Chicken",
+    description: "Three golden crispy chicken pieces — a hearty meal.",
+    price: 1200,
+    category: "chicken",
+    popular: false,
+    calories: 1050,
+  },
+  {
+    id: "ch4",
+    name: "Hot & Spicy Chicken",
+    description: "Extra spicy marinated crispy chicken for true heat lovers. Not for the faint-hearted!",
+    price: 520,
+    category: "chicken",
+    spicy: true,
+    calories: 380,
+  },
+  {
+    id: "ch5",
+    name: "Crispy Strips (3 pcs)",
+    description: "Tender chicken strips with your choice of signature dip sauce.",
+    price: 680,
+    category: "chicken",
+    popular: true,
+    calories: 420,
+  },
+  {
+    id: "ch6",
+    name: "Drumsticks (4 pcs)",
+    description: "Juicy, crispy drumsticks — the fan favorite cut.",
+    price: 1100,
+    category: "chicken",
+    popular: false,
+    calories: 890,
+  },
+
+  // BURGERS
+  {
+    id: "bu1",
+    name: "RFC Zinger Burger",
+    description: "Our signature crispy chicken fillet with fresh lettuce, tomato, and RFC's secret zinger sauce.",
+    price: 750,
+    category: "burgers",
+    popular: true,
+    calories: 580,
+  },
+  {
+    id: "bu2",
+    name: "Tower Burger",
+    description: "Double crispy chicken fillet stacked with cheese, hash brown, lettuce, and special tower sauce.",
+    price: 1050,
+    category: "burgers",
+    popular: true,
+    calories: 820,
+  },
+  {
+    id: "bu3",
+    name: "Fillet Burger",
+    description: "Classic juicy chicken fillet with crisp lettuce and creamy mayo.",
+    price: 650,
+    category: "burgers",
+    popular: false,
+    calories: 490,
+  },
+  {
+    id: "bu4",
+    name: "Hot Shot Zinger",
+    description: "Extra spicy zinger loaded with jalapeños, sriracha, and fire sauce.",
+    price: 850,
+    category: "burgers",
+    spicy: true,
+    calories: 620,
+  },
+  {
+    id: "bu5",
+    name: "Double Down",
+    description: "Two crispy chicken fillets replace the bun, loaded with cheese, bacon sauce, and ranch.",
+    price: 1150,
+    category: "burgers",
+    isNew: true,
+    calories: 750,
+  },
+  {
+    id: "bu6",
+    name: "BBQ Crunch Burger",
+    description: "Crispy chicken with smoky BBQ sauce and crunchy onion rings.",
+    price: 900,
+    category: "burgers",
+    popular: false,
+    calories: 670,
+  },
+
+  // WRAPS
+  {
+    id: "wr1",
+    name: "Twister Wrap",
+    description: "Tender chicken strips rolled in a soft tortilla with fresh garden veggies and creamy sauce.",
+    price: 680,
+    category: "wraps",
+    popular: true,
+    calories: 480,
+  },
+  {
+    id: "wr2",
+    name: "BBQ Crunch Wrap",
+    description: "BBQ glazed chicken strips with crunchy coleslaw wrapped in a warm tortilla.",
+    price: 750,
+    category: "wraps",
+    popular: false,
+    calories: 520,
+  },
+  {
+    id: "wr3",
+    name: "Spicy Fiesta Wrap",
+    description: "Spicy marinated chicken with salsa, jalapeños, and chipotle sauce in a soft tortilla.",
+    price: 720,
+    category: "wraps",
+    spicy: true,
+    calories: 510,
+  },
+
+  // SIDES
+  {
+    id: "si1",
+    name: "Regular Fries",
+    description: "Golden crispy fries, perfectly salted. The classic RFC side.",
+    price: 250,
+    category: "sides",
+    popular: true,
+    calories: 320,
+  },
+  {
+    id: "si2",
+    name: "Large Fries",
+    description: "Extra large golden crispy fries for the serious fry lover.",
+    price: 350,
+    category: "sides",
+    popular: false,
+    calories: 480,
+  },
+  {
+    id: "si3",
+    name: "Coleslaw",
+    description: "RFC's creamy signature coleslaw, fresh and crispy.",
+    price: 220,
+    category: "sides",
+    popular: true,
+    calories: 180,
+  },
+  {
+    id: "si4",
+    name: "Corn on Cob",
+    description: "Sweet butter glazed corn on the cob, grilled to perfection.",
+    price: 220,
+    category: "sides",
+    popular: false,
+    calories: 150,
+  },
+  {
+    id: "si5",
+    name: "Mashed Potatoes",
+    description: "Creamy mashed potatoes smothered in RFC's signature gravy.",
+    price: 260,
+    category: "sides",
+    popular: false,
+    calories: 200,
+  },
+  {
+    id: "si6",
+    name: "Biscuit",
+    description: "Warm, flaky buttermilk biscuit baked fresh daily.",
+    price: 150,
+    category: "sides",
+    popular: false,
+    calories: 220,
+  },
+
+  // DRINKS
+  {
+    id: "dr1",
+    name: "Pepsi Regular",
+    description: "350ml ice-cold Pepsi.",
+    price: 180,
+    category: "drinks",
+    popular: true,
+    calories: 150,
+  },
+  {
+    id: "dr2",
+    name: "Pepsi Large",
+    description: "600ml Pepsi bottle.",
+    price: 220,
+    category: "drinks",
+    popular: false,
+    calories: 260,
+  },
+  {
+    id: "dr3",
+    name: "7Up",
+    description: "350ml refreshing 7Up.",
+    price: 180,
+    category: "drinks",
+    popular: false,
+    calories: 140,
+  },
+  {
+    id: "dr4",
+    name: "Mountain Dew",
+    description: "350ml Mountain Dew.",
+    price: 180,
+    category: "drinks",
+    popular: false,
+    calories: 170,
+  },
+  {
+    id: "dr5",
+    name: "Sting Energy",
+    description: "250ml Sting energy drink.",
+    price: 150,
+    category: "drinks",
+    popular: false,
+    calories: 110,
+  },
+  {
+    id: "dr6",
+    name: "Mineral Water",
+    description: "500ml chilled mineral water.",
+    price: 120,
+    category: "drinks",
+    popular: false,
+    calories: 0,
+  },
+
+  // DESSERTS
+  {
+    id: "de1",
+    name: "Soft Serve Cone",
+    description: "Creamy swirled vanilla soft serve in a crispy cone.",
+    price: 180,
+    category: "desserts",
+    popular: true,
+    calories: 190,
+  },
+  {
+    id: "de2",
+    name: "Chocolate Brownie",
+    description: "Warm fudgy chocolate brownie, served with a drizzle of chocolate sauce.",
+    price: 250,
+    category: "desserts",
+    popular: false,
+    calories: 350,
+  },
+  {
+    id: "de3",
+    name: "Kulfee Bar",
+    description: "Traditional Pakistani frozen ice cream on a stick with cardamom and pistachio.",
+    price: 220,
+    category: "desserts",
+    popular: false,
+    calories: 210,
+  },
+  {
+    id: "de4",
+    name: "Rice Pudding",
+    description: "Classic kheer with cardamom, rose water and crushed nuts.",
+    price: 200,
+    category: "desserts",
+    popular: false,
+    calories: 280,
+  },
+];
+
+export const BRANCHES: Branch[] = [
+  {
+    id: "br1",
+    name: "Naval Colony",
+    address: "Shop #5, Main Road, Naval Colony, Karachi",
+    area: "Naval Colony",
+    city: "Karachi",
+    hours: "10:00 AM - 12:00 AM",
+    isOpen: true,
+    phone: "0315-1111001",
+    distance: "1.2 km",
+  },
+  {
+    id: "br2",
+    name: "Buns Road",
+    address: "Main Buns Road, Near Empress Market, Saddar, Karachi",
+    area: "Buns Road",
+    city: "Karachi",
+    hours: "10:00 AM - 1:00 AM",
+    isOpen: true,
+    phone: "0315-1111002",
+    distance: "2.8 km",
+  },
+  {
+    id: "br3",
+    name: "DHA Phase 5",
+    address: "Khayaban-e-Iqbal, Phase 5, DHA, Karachi",
+    area: "DHA",
+    city: "Karachi",
+    hours: "10:00 AM - 2:00 AM",
+    isOpen: true,
+    phone: "0315-1111003",
+    distance: "4.5 km",
+  },
+  {
+    id: "br4",
+    name: "Clifton Block 9",
+    address: "Dolmen Mall Clifton, Block 9, Clifton, Karachi",
+    area: "Clifton",
+    city: "Karachi",
+    hours: "11:00 AM - 11:00 PM",
+    isOpen: true,
+    phone: "0315-1111004",
+    distance: "5.1 km",
+  },
+  {
+    id: "br5",
+    name: "North Nazimabad",
+    address: "Block F, Main Road, North Nazimabad, Karachi",
+    area: "North Nazimabad",
+    city: "Karachi",
+    hours: "10:00 AM - 11:00 PM",
+    isOpen: true,
+    phone: "0315-1111005",
+    distance: "6.3 km",
+  },
+  {
+    id: "br6",
+    name: "Gulshan-e-Iqbal",
+    address: "Block 13-D, Gulshan-e-Iqbal, Karachi",
+    area: "Gulshan",
+    city: "Karachi",
+    hours: "10:00 AM - 12:00 AM",
+    isOpen: false,
+    phone: "0315-1111006",
+    distance: "7.8 km",
+  },
+  {
+    id: "br7",
+    name: "Saddar",
+    address: "Zaibunissa Street, Saddar Town, Karachi",
+    area: "Saddar",
+    city: "Karachi",
+    hours: "10:00 AM - 10:00 PM",
+    isOpen: true,
+    phone: "0315-1111007",
+    distance: "3.2 km",
+  },
+  {
+    id: "br8",
+    name: "Malir",
+    address: "Main Malir Road, Malir Cantt, Karachi",
+    area: "Malir",
+    city: "Karachi",
+    hours: "10:00 AM - 11:00 PM",
+    isOpen: true,
+    phone: "0315-1111008",
+    distance: "9.5 km",
+  },
+  {
+    id: "br9",
+    name: "Gulberg",
+    address: "MM Alam Road, Gulberg III, Lahore",
+    area: "Gulberg",
+    city: "Lahore",
+    hours: "10:00 AM - 2:00 AM",
+    isOpen: true,
+    phone: "0315-2222001",
+  },
+  {
+    id: "br10",
+    name: "DHA Lahore",
+    address: "Y Block Commercial, Phase 3, DHA, Lahore",
+    area: "DHA",
+    city: "Lahore",
+    hours: "10:00 AM - 1:00 AM",
+    isOpen: true,
+    phone: "0315-2222002",
+  },
+  {
+    id: "br11",
+    name: "F-7 Islamabad",
+    address: "F-7 Markaz, Blue Area, Islamabad",
+    area: "F-7",
+    city: "Islamabad",
+    hours: "10:00 AM - 12:00 AM",
+    isOpen: true,
+    phone: "0315-3333001",
+  },
+];
+
+export const CATEGORY_COLORS: Record<string, [string, string]> = {
+  deals: ["#0D3B1A", "#1B5E20"],
+  chicken: ["#BF360C", "#E64A19"],
+  burgers: ["#880E4F", "#AD1457"],
+  wraps: ["#00695C", "#00897B"],
+  sides: ["#E65100", "#F57C00"],
+  drinks: ["#0D47A1", "#1565C0"],
+  desserts: ["#4A148C", "#7B1FA2"],
+};
