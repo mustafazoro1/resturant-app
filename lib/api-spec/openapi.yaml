@@ -10,6 +10,13 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: admin-analytics
+    description: Admin analytics
+  - name: admin-menu
+    description: Admin menu management
+  - name: admin-orders
+    description: Admin order management
+
 paths:
   /healthz:
     get:
@@ -24,6 +31,135 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /admin/analytics:
+    get:
+      operationId: getAdminAnalytics
+      tags: [admin-analytics]
+      summary: Get analytics summary
+      description: Returns revenue totals, order counts, category breakdowns, and daily revenue trend
+      responses:
+        "200":
+          description: Analytics summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsSummary"
+
+  /admin/menu:
+    get:
+      operationId: listAdminMenuItems
+      tags: [admin-menu]
+      summary: List all menu items
+      responses:
+        "200":
+          description: List of menu items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminMenuItem"
+    post:
+      operationId: createAdminMenuItem
+      tags: [admin-menu]
+      summary: Add a new menu item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminMenuItemInput"
+      responses:
+        "201":
+          description: Created menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminMenuItem"
+
+  /admin/menu/{id}:
+    patch:
+      operationId: updateAdminMenuItem
+      tags: [admin-menu]
+      summary: Update or toggle availability of a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminMenuItemUpdate"
+      responses:
+        "200":
+          description: Updated menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminMenuItem"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteAdminMenuItem
+      tags: [admin-menu]
+      summary: Delete a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /admin/orders:
+    get:
+      operationId: listAdminOrders
+      tags: [admin-orders]
+      summary: List all orders
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminOrder"
+
+  /admin/orders/{id}/status:
+    patch:
+      operationId: updateAdminOrderStatus
+      tags: [admin-orders]
+      summary: Update order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderStatusUpdate"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOrder"
+        "404":
+          description: Not found
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +170,152 @@ components:
       required:
         - status
 
+    AnalyticsSummary:
+      type: object
+      required: [totalRevenue, totalOrders, activeOrders, outOfStockItems, categoryBreakdown, dailyRevenue]
+      properties:
+        totalRevenue:
+          type: number
+        totalOrders:
+          type: integer
+        activeOrders:
+          type: integer
+        outOfStockItems:
+          type: integer
+        categoryBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryStat"
+        dailyRevenue:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyRevenue"
+
+    CategoryStat:
+      type: object
+      required: [category, orders, revenue]
+      properties:
+        category:
+          type: string
+        orders:
+          type: integer
+        revenue:
+          type: number
+
+    DailyRevenue:
+      type: object
+      required: [date, revenue, orders]
+      properties:
+        date:
+          type: string
+        revenue:
+          type: number
+        orders:
+          type: integer
+
+    AdminMenuItem:
+      type: object
+      required: [id, name, description, price, category, available]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        available:
+          type: boolean
+        spicy:
+          type: boolean
+        popular:
+          type: boolean
+        calories:
+          type: ["integer", "null"]
+
+    AdminMenuItemInput:
+      type: object
+      required: [name, description, price, category]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        price:
+          type: number
+          minimum: 0
+        category:
+          type: string
+        spicy:
+          type: boolean
+        popular:
+          type: boolean
+        calories:
+          type: ["integer", "null"]
+
+    AdminMenuItemUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        available:
+          type: boolean
+        spicy:
+          type: boolean
+        popular:
+          type: boolean
+        calories:
+          type: ["integer", "null"]
+
+    AdminOrder:
+      type: object
+      required: [id, customerName, customerPhone, branch, orderType, items, total, status, createdAt]
+      properties:
+        id:
+          type: string
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        branch:
+          type: string
+        orderType:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminOrderItem"
+        total:
+          type: number
+        status:
+          type: string
+        createdAt:
+          type: string
+
+    AdminOrderItem:
+      type: object
+      required: [name, quantity, price]
+      properties:
+        name:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+
+    OrderStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
