@@ -9,6 +9,7 @@ export interface MenuItem {
   isNew?: boolean;
   calories?: number;
   image?: ReturnType<typeof require>;
+  imageUrl?: string | null;
 }
 
 export interface Category {

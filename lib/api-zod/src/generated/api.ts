@@ -9,7 +9,6 @@ import * as zod from 'zod';
 
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -18,7 +17,52 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * Returns revenue totals, order counts, category breakdowns, and daily revenue trend
+ * @summary Request a presigned URL for file upload
+ */
+
+
+
+
+
+export const RequestUploadUrlBody = zod.object({
+  "name": zod.string().min(1),
+  "size": zod.number().min(1),
+  "contentType": zod.string().min(1)
+})
+
+export const RequestUploadUrlResponse = zod.object({
+  "uploadURL": zod.string(),
+  "objectPath": zod.string()
+})
+
+
+/**
+ * @summary Serve an uploaded object
+ */
+export const GetStorageObjectParams = zod.object({
+  "objectPath": zod.coerce.string()
+})
+
+
+/**
+ * @summary Get all available menu items for the mobile app
+ */
+export const GetMobileMenuResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "price": zod.number(),
+  "category": zod.string(),
+  "available": zod.boolean(),
+  "spicy": zod.boolean().optional(),
+  "popular": zod.boolean().optional(),
+  "calories": zod.number().nullish(),
+  "imageUrl": zod.string().nullish()
+})
+export const GetMobileMenuResponse = zod.array(GetMobileMenuResponseItem)
+
+
+/**
  * @summary Get analytics summary
  */
 export const GetAdminAnalyticsResponse = zod.object({
@@ -51,7 +95,8 @@ export const ListAdminMenuItemsResponseItem = zod.object({
   "available": zod.boolean(),
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
-  "calories": zod.number().nullish()
+  "calories": zod.number().nullish(),
+  "imageUrl": zod.string().nullish()
 })
 export const ListAdminMenuItemsResponse = zod.array(ListAdminMenuItemsResponseItem)
 
@@ -71,12 +116,13 @@ export const CreateAdminMenuItemBody = zod.object({
   "category": zod.string(),
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
-  "calories": zod.number().nullish()
+  "calories": zod.number().nullish(),
+  "imageUrl": zod.string().nullish()
 })
 
 
 /**
- * @summary Update or toggle availability of a menu item
+ * @summary Update a menu item
  */
 export const UpdateAdminMenuItemParams = zod.object({
   "id": zod.coerce.string()
@@ -90,7 +136,8 @@ export const UpdateAdminMenuItemBody = zod.object({
   "available": zod.boolean().optional(),
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
-  "calories": zod.number().nullish()
+  "calories": zod.number().nullish(),
+  "imageUrl": zod.string().nullish()
 })
 
 export const UpdateAdminMenuItemResponse = zod.object({
@@ -102,7 +149,8 @@ export const UpdateAdminMenuItemResponse = zod.object({
   "available": zod.boolean(),
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
-  "calories": zod.number().nullish()
+  "calories": zod.number().nullish(),
+  "imageUrl": zod.string().nullish()
 })
 
 

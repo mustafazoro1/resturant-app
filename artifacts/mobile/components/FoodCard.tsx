@@ -13,6 +13,10 @@ interface FoodCardProps {
   horizontal?: boolean;
 }
 
+const API_BASE = process.env["EXPO_PUBLIC_DOMAIN"]
+  ? `https://${process.env["EXPO_PUBLIC_DOMAIN"]}`
+  : "";
+
 export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
   const colors = useColors();
   const { addItem, getItemQuantity, updateQuantity, items } = useCart();
@@ -32,6 +36,12 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
     }
   };
 
+  const resolvedImageUrl = item.imageUrl
+    ? item.imageUrl.startsWith("http")
+      ? item.imageUrl
+      : `${API_BASE}${item.imageUrl}`
+    : null;
+
   if (horizontal) {
     return (
       <TouchableOpacity
@@ -39,7 +49,13 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
         activeOpacity={0.85}
         style={[styles.hCard, { backgroundColor: colors.card, borderColor: colors.border }]}
       >
-        {item.image ? (
+        {resolvedImageUrl ? (
+          <Image
+            source={{ uri: resolvedImageUrl }}
+            style={styles.hImageFull}
+            resizeMode="cover"
+          />
+        ) : item.image ? (
           <LinearGradient colors={gradColors} style={styles.hImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
             <Image source={item.image} style={styles.hImage} resizeMode="contain" />
           </LinearGradient>
@@ -112,13 +128,21 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
       activeOpacity={0.85}
       style={[styles.vCard, { backgroundColor: colors.card, borderColor: colors.border }]}
     >
-      <LinearGradient colors={gradColors} style={styles.vImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-        {item.image ? (
-          <Image source={item.image} style={styles.vImage} resizeMode="contain" />
-        ) : (
-          <Feather name="layers" size={24} color="rgba(255,255,255,0.7)" />
-        )}
-      </LinearGradient>
+      {resolvedImageUrl ? (
+        <Image
+          source={{ uri: resolvedImageUrl }}
+          style={styles.vImageFull}
+          resizeMode="cover"
+        />
+      ) : (
+        <LinearGradient colors={gradColors} style={styles.vImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+          {item.image ? (
+            <Image source={item.image} style={styles.vImage} resizeMode="contain" />
+          ) : (
+            <Feather name="layers" size={24} color="rgba(255,255,255,0.7)" />
+          )}
+        </LinearGradient>
+      )}
       <View style={styles.vInfo}>
         <Text style={[styles.vName, { color: colors.foreground }]} numberOfLines={2}>
           {item.name}
@@ -173,6 +197,10 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "center",
     alignItems: "center",
+  },
+  hImageFull: {
+    width: 90,
+    height: 100,
   },
   hImage: {
     width: 80,
@@ -266,6 +294,10 @@ const styles = StyleSheet.create({
     height: 90,
     justifyContent: "center",
     alignItems: "center",
+  },
+  vImageFull: {
+    width: "100%",
+    height: 90,
   },
   vImage: {
     width: "90%",

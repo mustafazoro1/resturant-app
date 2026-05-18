@@ -14,5 +14,8 @@ export * from './adminOrderItem';
 export * from './analyticsSummary';
 export * from './categoryStat';
 export * from './dailyRevenue';
+export * from './errorEnvelope';
 export * from './healthStatus';
 export * from './orderStatusUpdate';
+export * from './uploadUrlRequest';
+export * from './uploadUrlResponse';

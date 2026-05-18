@@ -9,6 +9,24 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface ErrorEnvelope {
+  error: string;
+}
+
+export interface UploadUrlRequest {
+  /** @minLength 1 */
+  name: string;
+  /** @minimum 1 */
+  size: number;
+  /** @minLength 1 */
+  contentType: string;
+}
+
+export interface UploadUrlResponse {
+  uploadURL: string;
+  objectPath: string;
+}
+
 export interface CategoryStat {
   category: string;
   orders: number;
@@ -41,6 +59,8 @@ export interface AdminMenuItem {
   popular?: boolean;
   /** @nullable */
   calories?: number | null;
+  /** @nullable */
+  imageUrl?: string | null;
 }
 
 export interface AdminMenuItemInput {
@@ -54,6 +74,8 @@ export interface AdminMenuItemInput {
   popular?: boolean;
   /** @nullable */
   calories?: number | null;
+  /** @nullable */
+  imageUrl?: string | null;
 }
 
 export interface AdminMenuItemUpdate {
@@ -66,6 +88,8 @@ export interface AdminMenuItemUpdate {
   popular?: boolean;
   /** @nullable */
   calories?: number | null;
+  /** @nullable */
+  imageUrl?: string | null;
 }
 
 export interface AdminOrderItem {

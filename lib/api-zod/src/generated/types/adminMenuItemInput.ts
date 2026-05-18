@@ -17,4 +17,6 @@ export interface AdminMenuItemInput {
   popular?: boolean;
   /** @nullable */
   calories?: number | null;
+  /** @nullable */
+  imageUrl?: string | null;
 }
