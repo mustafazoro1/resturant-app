@@ -3,7 +3,6 @@ import { BlurView } from "expo-blur";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
-import { SymbolView } from "expo-symbols";
 import React from "react";
 import { Platform, StyleSheet, Text, View, useColorScheme } from "react-native";
 
@@ -100,12 +99,7 @@ function ClassicTabLayout() {
         options={{
           title: "Home",
           headerShown: false,
-          tabBarIcon: ({ color, size }) =>
-            isIOS ? (
-              <SymbolView name="house" tintColor={color} size={size} />
-            ) : (
-              <Feather name="home" size={22} color={color} />
-            ),
+          tabBarIcon: ({ color }) => <Feather name="home" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -113,12 +107,7 @@ function ClassicTabLayout() {
         options={{
           title: "Menu",
           headerShown: false,
-          tabBarIcon: ({ color, size }) =>
-            isIOS ? (
-              <SymbolView name="fork.knife" tintColor={color} size={size} />
-            ) : (
-              <Feather name="grid" size={22} color={color} />
-            ),
+          tabBarIcon: ({ color }) => <Feather name="grid" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -135,36 +124,21 @@ function ClassicTabLayout() {
             height: 18,
             borderRadius: 9,
           },
-          tabBarIcon: ({ color, size }) =>
-            isIOS ? (
-              <SymbolView name="cart" tintColor={color} size={size} />
-            ) : (
-              <Feather name="shopping-bag" size={22} color={color} />
-            ),
+          tabBarIcon: ({ color }) => <Feather name="shopping-bag" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="orders"
         options={{
           title: "Orders",
-          tabBarIcon: ({ color, size }) =>
-            isIOS ? (
-              <SymbolView name="clock" tintColor={color} size={size} />
-            ) : (
-              <Feather name="clock" size={22} color={color} />
-            ),
+          tabBarIcon: ({ color }) => <Feather name="clock" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) =>
-            isIOS ? (
-              <SymbolView name="person" tintColor={color} size={size} />
-            ) : (
-              <Feather name="user" size={22} color={color} />
-            ),
+          tabBarIcon: ({ color }) => <Feather name="user" size={22} color={color} />,
         }}
       />
     </Tabs>

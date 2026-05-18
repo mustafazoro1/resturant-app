@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -54,14 +55,18 @@ export default function ItemDetailScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
-        {/* Image Placeholder */}
+        {/* Item Image */}
         <LinearGradient
           colors={gradColors}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.imagePlaceholder}
         >
-          <Feather name="layers" size={72} color="rgba(255,255,255,0.5)" />
+          {item.image ? (
+            <Image source={item.image} style={styles.itemImage} resizeMode="contain" />
+          ) : (
+            <Feather name="layers" size={72} color="rgba(255,255,255,0.5)" />
+          )}
         </LinearGradient>
 
         <View style={styles.content}>
@@ -189,6 +194,10 @@ const styles = StyleSheet.create({
     height: 260,
     justifyContent: "center",
     alignItems: "center",
+  },
+  itemImage: {
+    width: "80%",
+    height: 220,
   },
   content: {
     padding: 20,

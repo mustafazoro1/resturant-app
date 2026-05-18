@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CATEGORY_COLORS, MenuItem } from "@/constants/data";
 import { useCart } from "@/contexts/CartContext";
 import { useColors } from "@/hooks/useColors";
@@ -39,14 +39,15 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
         activeOpacity={0.85}
         style={[styles.hCard, { backgroundColor: colors.card, borderColor: colors.border }]}
       >
-        <LinearGradient
-          colors={gradColors}
-          style={styles.hImagePlaceholder}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Feather name="layers" size={28} color="rgba(255,255,255,0.7)" />
-        </LinearGradient>
+        {item.image ? (
+          <LinearGradient colors={gradColors} style={styles.hImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+            <Image source={item.image} style={styles.hImage} resizeMode="contain" />
+          </LinearGradient>
+        ) : (
+          <LinearGradient colors={gradColors} style={styles.hImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+            <Feather name="layers" size={28} color="rgba(255,255,255,0.7)" />
+          </LinearGradient>
+        )}
         <View style={styles.hInfo}>
           <View style={styles.badgeRow}>
             {item.popular && (
@@ -111,13 +112,12 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
       activeOpacity={0.85}
       style={[styles.vCard, { backgroundColor: colors.card, borderColor: colors.border }]}
     >
-      <LinearGradient
-        colors={gradColors}
-        style={styles.vImagePlaceholder}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <Feather name="layers" size={24} color="rgba(255,255,255,0.7)" />
+      <LinearGradient colors={gradColors} style={styles.vImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+        {item.image ? (
+          <Image source={item.image} style={styles.vImage} resizeMode="contain" />
+        ) : (
+          <Feather name="layers" size={24} color="rgba(255,255,255,0.7)" />
+        )}
       </LinearGradient>
       <View style={styles.vInfo}>
         <Text style={[styles.vName, { color: colors.foreground }]} numberOfLines={2}>
@@ -173,6 +173,10 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "center",
     alignItems: "center",
+  },
+  hImage: {
+    width: 80,
+    height: 90,
   },
   hInfo: {
     flex: 1,
@@ -262,6 +266,10 @@ const styles = StyleSheet.create({
     height: 90,
     justifyContent: "center",
     alignItems: "center",
+  },
+  vImage: {
+    width: "90%",
+    height: 80,
   },
   vInfo: {
     padding: 10,

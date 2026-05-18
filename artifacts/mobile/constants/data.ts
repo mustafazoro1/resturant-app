@@ -8,6 +8,7 @@ export interface MenuItem {
   spicy?: boolean;
   isNew?: boolean;
   calories?: number;
+  image?: ReturnType<typeof require>;
 }
 
 export interface Category {
@@ -37,6 +38,7 @@ export interface Deal {
   tag?: string;
   gradientStart: string;
   gradientEnd: string;
+  image?: ReturnType<typeof require>;
 }
 
 export const CATEGORIES: Category[] = [
@@ -59,6 +61,7 @@ export const DEALS: Deal[] = [
     tag: "Best Seller",
     gradientStart: "#0D3B1A",
     gradientEnd: "#1B5E20",
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "d2",
@@ -69,6 +72,7 @@ export const DEALS: Deal[] = [
     tag: "Hot Deal",
     gradientStart: "#B71C1C",
     gradientEnd: "#C8102E",
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "d3",
@@ -79,6 +83,7 @@ export const DEALS: Deal[] = [
     tag: "Value",
     gradientStart: "#1A237E",
     gradientEnd: "#283593",
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "d4",
@@ -89,6 +94,7 @@ export const DEALS: Deal[] = [
     tag: "New",
     gradientStart: "#4A148C",
     gradientEnd: "#6A1B9A",
+    image: require("../assets/images/chicken.png"),
   },
 ];
 
@@ -101,6 +107,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 3499,
     category: "deals",
     popular: true,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "deal2",
@@ -109,6 +116,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 1649,
     category: "deals",
     popular: true,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "deal3",
@@ -117,6 +125,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 899,
     category: "deals",
     popular: false,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "deal4",
@@ -125,6 +134,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 1299,
     category: "deals",
     popular: false,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "deal5",
@@ -133,6 +143,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 2199,
     category: "deals",
     popular: false,
+    image: require("../assets/images/burger.png"),
   },
 
   // CHICKEN
@@ -144,6 +155,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "chicken",
     popular: true,
     calories: 350,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "ch2",
@@ -153,6 +165,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "chicken",
     popular: true,
     calories: 700,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "ch3",
@@ -162,6 +175,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "chicken",
     popular: false,
     calories: 1050,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "ch4",
@@ -171,6 +185,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "chicken",
     spicy: true,
     calories: 380,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "ch5",
@@ -180,6 +195,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "chicken",
     popular: true,
     calories: 420,
+    image: require("../assets/images/chicken.png"),
   },
   {
     id: "ch6",
@@ -189,6 +205,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "chicken",
     popular: false,
     calories: 890,
+    image: require("../assets/images/chicken.png"),
   },
 
   // BURGERS
@@ -200,6 +217,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "burgers",
     popular: true,
     calories: 580,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "bu2",
@@ -209,6 +227,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "burgers",
     popular: true,
     calories: 820,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "bu3",
@@ -218,6 +237,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "burgers",
     popular: false,
     calories: 490,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "bu4",
@@ -227,6 +247,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "burgers",
     spicy: true,
     calories: 620,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "bu5",
@@ -236,6 +257,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "burgers",
     isNew: true,
     calories: 750,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "bu6",
@@ -245,6 +267,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "burgers",
     popular: false,
     calories: 670,
+    image: require("../assets/images/burger.png"),
   },
 
   // WRAPS
@@ -256,6 +279,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "wraps",
     popular: true,
     calories: 480,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "wr2",
@@ -265,6 +289,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "wraps",
     popular: false,
     calories: 520,
+    image: require("../assets/images/burger.png"),
   },
   {
     id: "wr3",
@@ -274,6 +299,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "wraps",
     spicy: true,
     calories: 510,
+    image: require("../assets/images/burger.png"),
   },
 
   // SIDES
