@@ -6,7 +6,8 @@ import {
   useDeleteAdminMenuItem, 
   useCreateAdminMenuItem, 
   getListAdminMenuItemsQueryKey,
-  useRequestUploadUrl
+  useRequestUploadUrl,
+  useListAdminCategories,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +39,7 @@ type MenuItemFormValues = z.infer<typeof menuItemSchema>;
 
 export default function Menu() {
   const { data: menuItems, isLoading } = useListAdminMenuItems();
+  const { data: categories } = useListAdminCategories();
   const queryClient = useQueryClient();
   const updateItem = useUpdateAdminMenuItem();
   const deleteItem = useDeleteAdminMenuItem();
@@ -51,7 +53,7 @@ export default function Menu() {
   
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const categories = useMemo(() => {
+  const filterCategories = useMemo(() => {
     if (!menuItems) return [];
     return Array.from(new Set(menuItems.map(i => i.category)));
   }, [menuItems]);
@@ -230,7 +232,18 @@ export default function Menu() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="font-semibold">Category</FormLabel>
-                          <FormControl><Input placeholder="Burgers" {...field} /></FormControl>
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {(categories ?? []).map(c => (
+                                <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -363,7 +376,18 @@ export default function Menu() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="font-semibold">Category</FormLabel>
-                          <FormControl><Input placeholder="Burgers" {...field} /></FormControl>
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {(categories ?? []).map(c => (
+                                <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -489,7 +513,7 @@ export default function Menu() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(c => (
+              {filterCategories.map(c => (
                 <SelectItem key={c} value={c}>{c}</SelectItem>
               ))}
             </SelectContent>

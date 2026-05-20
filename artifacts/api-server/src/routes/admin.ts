@@ -14,11 +14,13 @@ import {
   ListAdminOrdersResponseItem,
   GetAdminAnalyticsResponse,
   GetMobileMenuResponseItem,
+  CreateAdminCategoryBody,
+  DeleteAdminCategoryParams,
 } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-// ---------- Persistence ----------
+// ---------- Types ----------
 
 type MenuItem = {
   id: string;
@@ -47,13 +49,32 @@ type Order = {
   createdAt: string;
 };
 
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
 type StoreData = {
   menuItems: MenuItem[];
   orders: Order[];
+  categories: Category[];
 };
+
+// ---------- Defaults ----------
 
 const DATA_DIR = join(process.cwd(), "data");
 const DATA_FILE = join(DATA_DIR, "store.json");
+
+const DEFAULT_CATEGORIES: Category[] = [
+  { id: "cat-deals", name: "Deals", slug: "deals" },
+  { id: "cat-chicken", name: "Chicken", slug: "chicken" },
+  { id: "cat-burgers", name: "Burgers", slug: "burgers" },
+  { id: "cat-wraps", name: "Wraps", slug: "wraps" },
+  { id: "cat-sides", name: "Sides", slug: "sides" },
+  { id: "cat-drinks", name: "Drinks", slug: "drinks" },
+  { id: "cat-desserts", name: "Desserts", slug: "desserts" },
+];
 
 const DEFAULT_MENU: MenuItem[] = [
   { id: "m1", name: "Zinger Burger", description: "Crispy fried chicken fillet with spicy mayo and lettuce", price: 650, category: "Burgers", available: true, spicy: true, popular: true, calories: 520, imageUrl: null },
@@ -103,12 +124,19 @@ const DEFAULT_ORDERS: Order[] = [
   },
 ];
 
+// ---------- Persistence ----------
+
 async function loadStore(): Promise<StoreData> {
   try {
     const raw = await readFile(DATA_FILE, "utf-8");
-    return JSON.parse(raw) as StoreData;
+    const parsed = JSON.parse(raw) as Partial<StoreData>;
+    return {
+      menuItems: parsed.menuItems ?? DEFAULT_MENU,
+      orders: parsed.orders ?? DEFAULT_ORDERS,
+      categories: parsed.categories ?? DEFAULT_CATEGORIES,
+    };
   } catch {
-    return { menuItems: DEFAULT_MENU, orders: DEFAULT_ORDERS };
+    return { menuItems: DEFAULT_MENU, orders: DEFAULT_ORDERS, categories: DEFAULT_CATEGORIES };
   }
 }
 
@@ -170,6 +198,67 @@ router.get("/admin/analytics", async (_req, res): Promise<void> => {
   const store = await loadStore();
   const analytics = buildAnalytics(store);
   res.json(GetAdminAnalyticsResponse.parse(analytics));
+});
+
+// ---------- Categories ----------
+
+router.get("/admin/categories", async (_req, res): Promise<void> => {
+  const store = await loadStore();
+  const cats = store.categories ?? DEFAULT_CATEGORIES;
+  const result = cats.map((c) => ({
+    ...c,
+    itemCount: store.menuItems.filter((m) => m.category.toLowerCase() === c.name.toLowerCase() || m.category === c.name).length,
+  }));
+  res.json(result);
+});
+
+router.post("/admin/categories", async (req, res): Promise<void> => {
+  const parsed = CreateAdminCategoryBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  const store = await loadStore();
+  const cats = store.categories ?? DEFAULT_CATEGORIES;
+  const exists = cats.some(
+    (c) => c.slug === parsed.data.slug || c.name.toLowerCase() === parsed.data.name.toLowerCase()
+  );
+  if (exists) {
+    res.status(409).json({ error: "A category with this name or slug already exists" });
+    return;
+  }
+  const newCat: Category = {
+    id: `cat-${Date.now()}`,
+    name: parsed.data.name,
+    slug: parsed.data.slug,
+  };
+  store.categories = [...cats, newCat];
+  await saveStore(store);
+  res.status(201).json({ ...newCat, itemCount: 0 });
+});
+
+router.delete("/admin/categories/:id", async (req, res): Promise<void> => {
+  const rawId = Array.isArray(req.params["id"]) ? req.params["id"][0] : req.params["id"];
+  const params = DeleteAdminCategoryParams.safeParse({ id: rawId });
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+  const store = await loadStore();
+  const cats = store.categories ?? DEFAULT_CATEGORIES;
+  const cat = cats.find((c) => c.id === params.data.id);
+  if (!cat) {
+    res.status(404).json({ error: "Category not found" });
+    return;
+  }
+  const itemCount = store.menuItems.filter((m) => m.category.toLowerCase() === cat.name.toLowerCase()).length;
+  if (itemCount > 0) {
+    res.status(409).json({ error: `Cannot delete — ${itemCount} menu item(s) use this category` });
+    return;
+  }
+  store.categories = cats.filter((c) => c.id !== params.data.id);
+  await saveStore(store);
+  res.sendStatus(204);
 });
 
 // ---------- Menu ----------

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Menu as MenuIcon, ReceiptText, BarChart3, LogOut } from "lucide-react";
+import { LayoutDashboard, Menu as MenuIcon, ReceiptText, BarChart3, LogOut, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -7,6 +7,7 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/orders", label: "Live Orders", icon: ReceiptText },
   { href: "/menu", label: "Menu Management", icon: MenuIcon },
+  { href: "/categories", label: "Categories", icon: Tag },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
 ];
 

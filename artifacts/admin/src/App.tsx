@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import Menu from "@/pages/menu";
 import Orders from "@/pages/orders";
 import Analytics from "@/pages/analytics";
+import Categories from "@/pages/categories";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/menu" component={Menu} />
       <Route path="/orders" component={Orders} />
       <Route path="/analytics" component={Analytics} />
+      <Route path="/categories" component={Categories} />
       <Route component={NotFound} />
     </Switch>
   );

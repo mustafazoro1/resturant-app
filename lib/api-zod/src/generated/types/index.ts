@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './adminCategory';
+export * from './adminCategoryInput';
 export * from './adminMenuItem';
 export * from './adminMenuItemInput';
 export * from './adminMenuItemUpdate';

@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DealCard } from "@/components/DealCard";
 import { FoodCard } from "@/components/FoodCard";
+import { HeroBanner } from "@/components/HeroBanner";
 import { DEALS, MENU_ITEMS, MenuItem } from "@/constants/data";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBranch } from "@/contexts/BranchContext";
@@ -145,6 +146,9 @@ export default function HomeScreen() {
           { paddingBottom: Platform.OS === "web" ? 100 : 100 + insets.bottom },
         ]}
       >
+        {/* Hero Banner Carousel */}
+        <HeroBanner />
+
         {/* Loyalty Points Banner */}
         {user && availableTier && (
           <TouchableOpacity

@@ -184,6 +184,39 @@ export const ListAdminOrdersResponse = zod.array(ListAdminOrdersResponseItem)
 
 
 /**
+ * @summary List all categories
+ */
+export const ListAdminCategoriesResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "itemCount": zod.number()
+})
+export const ListAdminCategoriesResponse = zod.array(ListAdminCategoriesResponseItem)
+
+
+/**
+ * @summary Create a new category
+ */
+
+
+
+
+export const CreateAdminCategoryBody = zod.object({
+  "name": zod.string().min(1),
+  "slug": zod.string().min(1)
+})
+
+
+/**
+ * @summary Delete a category
+ */
+export const DeleteAdminCategoryParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+/**
  * @summary Update order status
  */
 export const UpdateAdminOrderStatusParams = zod.object({

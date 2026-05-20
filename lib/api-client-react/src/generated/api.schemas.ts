@@ -110,6 +110,20 @@ export interface AdminOrder {
   createdAt: string;
 }
 
+export interface AdminCategory {
+  id: string;
+  name: string;
+  slug: string;
+  itemCount: number;
+}
+
+export interface AdminCategoryInput {
+  /** @minLength 1 */
+  name: string;
+  /** @minLength 1 */
+  slug: string;
+}
+
 export interface OrderStatusUpdate {
   status: string;
 }

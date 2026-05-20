@@ -206,6 +206,71 @@ paths:
                 items:
                   $ref: "#/components/schemas/AdminOrder"
 
+  /admin/categories:
+    get:
+      operationId: listAdminCategories
+      tags: [admin-menu]
+      summary: List all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminCategory"
+    post:
+      operationId: createAdminCategory
+      tags: [admin-menu]
+      summary: Create a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminCategoryInput"
+      responses:
+        "201":
+          description: Created category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCategory"
+        "409":
+          description: Category already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /admin/categories/{id}:
+    delete:
+      operationId: deleteAdminCategory
+      tags: [admin-menu]
+      summary: Delete a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Category has items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
   /admin/orders/{id}/status:
     patch:
       operationId: updateAdminOrderStatus
@@ -420,6 +485,30 @@ components:
           type: integer
         price:
           type: number
+
+    AdminCategory:
+      type: object
+      required: [id, name, slug, itemCount]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        itemCount:
+          type: integer
+
+    AdminCategoryInput:
+      type: object
+      required: [name, slug]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        slug:
+          type: string
+          minLength: 1
 
     OrderStatusUpdate:
       type: object
