@@ -14,7 +14,7 @@ export default function NotFound() {
         <p className="text-muted-foreground text-center max-w-[400px] mb-8">
           The operations dashboard sector you're looking for doesn't exist or you don't have authorization.
         </p>
-        <Link href="/">
+        <Link href="/menu">
           <Button size="lg" className="gap-2">
             <Home className="w-4 h-4" />
             Return to Dashboard

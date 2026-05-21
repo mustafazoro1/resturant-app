@@ -40,7 +40,7 @@ export default function Dashboard() {
               <CircleDollarSign className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Rs {analytics?.totalRevenue.toLocaleString() || 0}</div>
+                <div className="text-2xl font-bold">Rs {analytics?.totalRevenue ? analytics.totalRevenue.toLocaleString() : 0}</div>
             </CardContent>
           </Card>
           
@@ -128,7 +128,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentOrders.length === 0 ? (
+                {(!Array.isArray(recentOrders) || recentOrders.length === 0) ? (
                   <p className="text-sm text-muted-foreground text-center py-4">No recent orders</p>
                 ) : (
                   recentOrders.map(order => (

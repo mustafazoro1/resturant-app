@@ -136,11 +136,11 @@ export default function OrderConfirmScreen() {
 
       {/* Buttons */}
       <View style={styles.buttons}>
-        <TouchableOpacity onPress={() => router.replace("/(tabs)/orders")} style={styles.trackBtn}>
+        <TouchableOpacity onPress={() => router.replace("/orders")} style={styles.trackBtn}>
           <Feather name="clock" size={17} color={colors.primary} />
           <Text style={[styles.trackBtnText, { color: colors.primary }]}>{t("trackOrder")}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.replace("/(tabs)/index")} style={[styles.homeBtn, { backgroundColor: colors.accent }]}>
+        <TouchableOpacity onPress={() => router.replace("/")} style={[styles.homeBtn, { backgroundColor: colors.accent }]}>
           <Text style={styles.homeBtnText}>{t("backToHome")}</Text>
           <Feather name="arrow-right" size={17} color="#FFF" />
         </TouchableOpacity>

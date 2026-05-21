@@ -12,6 +12,7 @@ export interface User {
   name: string;
   phone: string;
   email?: string;
+  profilePicUrl?: string;
   addresses: SavedAddress[];
   loyaltyPoints: number;
 }
@@ -29,7 +30,8 @@ interface AuthContextType {
   isLoading: boolean;
   signIn: (name: string, phone: string) => Promise<void>;
   signOut: () => Promise<void>;
-  updateProfile: (updates: Partial<Pick<User, "name" | "phone" | "email">>) => Promise<void>;
+  updateProfile: (updates: Partial<Pick<User, "name" | "phone" | "email" | "profilePicUrl">>) => Promise<void>;
+  uploadProfilePic: (uri: string) => Promise<void>;
   addAddress: (address: Omit<SavedAddress, "id">) => Promise<void>;
   updateAddress: (id: string, updates: Partial<Omit<SavedAddress, "id">>) => Promise<void>;
   removeAddress: (id: string) => Promise<void>;
@@ -46,6 +48,7 @@ const AuthContext = createContext<AuthContextType>({
   signIn: async () => {},
   signOut: async () => {},
   updateProfile: async () => {},
+  uploadProfilePic: async () => {},
   addAddress: async () => {},
   updateAddress: async () => {},
   removeAddress: async () => {},
@@ -95,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateProfile = useCallback(
-    async (updates: Partial<Pick<User, "name" | "phone" | "email">>) => {
+    async (updates: Partial<Pick<User, "name" | "phone" | "email" | "profilePicUrl">>) => {
       setUser((prev) => {
         if (!prev) return prev;
         const updated = { ...prev, ...updates };
@@ -105,6 +108,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     []
   );
+
+  const uploadProfilePic = useCallback(async (uri: string) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, profilePicUrl: uri };
+      persist(updated);
+      return updated;
+    });
+  }, []);
+
 
   const addAddress = useCallback(async (address: Omit<SavedAddress, "id">) => {
     setUser((prev) => {
@@ -196,6 +209,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signIn,
         signOut,
         updateProfile,
+        uploadProfilePic,
         addAddress,
         updateAddress,
         removeAddress,

@@ -80,6 +80,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       total: number;
       orderType: "dinein" | "takeaway" | "delivery";
       deliveryAddress?: string;
+      loyaltyDiscount?: number;
     }): Order => {
       const orderId = "RFC" + Date.now().toString().slice(-6);
       const estimatedMinutes = params.orderType === "delivery" ? 45 : params.orderType === "takeaway" ? 20 : 15;

@@ -5,7 +5,12 @@ import {
   RequestUploadUrlResponse,
 } from "@workspace/api-zod";
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
-import { ObjectPermission } from "../lib/objectAcl";
+import {
+  createLocalUploadTarget,
+  readLocalObject,
+  saveLocalUpload,
+  useLocalObjectStorage,
+} from "../lib/localObjectStorage";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
@@ -26,6 +31,18 @@ router.post("/storage/uploads/request-url", async (req: Request, res: Response) 
 
   try {
     const { name, size, contentType } = parsed.data;
+
+    if (useLocalObjectStorage()) {
+      const { uploadURL, objectPath } = createLocalUploadTarget();
+      res.json(
+        RequestUploadUrlResponse.parse({
+          uploadURL,
+          objectPath,
+          metadata: { name, size, contentType },
+        }),
+      );
+      return;
+    }
 
     const uploadURL = await objectStorageService.getObjectEntityUploadURL();
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
@@ -84,11 +101,62 @@ router.get("/storage/public-objects/*filePath", async (req: Request, res: Respon
  * These are served from a separate path from /public-objects and can optionally
  * be protected with authentication or ACL checks based on the use case.
  */
+router.put("/storage/local-upload/:id", async (req: Request, res: Response) => {
+  if (!useLocalObjectStorage()) {
+    res.status(404).json({ error: "Local upload not enabled" });
+    return;
+  }
+
+  const rawId = req.params["id"];
+  const objectId = Array.isArray(rawId) ? rawId[0] : rawId;
+  if (!objectId) {
+    res.status(400).json({ error: "Missing upload id" });
+    return;
+  }
+
+  const body = req.body;
+  const buffer = Buffer.isBuffer(body)
+    ? body
+    : typeof body === "string"
+      ? Buffer.from(body)
+      : null;
+
+  if (!buffer || buffer.length === 0) {
+    res.status(400).json({ error: "Empty upload body" });
+    return;
+  }
+
+  try {
+    const contentType =
+      typeof req.headers["content-type"] === "string"
+        ? req.headers["content-type"]
+        : "application/octet-stream";
+    await saveLocalUpload(objectId, buffer, contentType);
+    res.status(200).send();
+  } catch (error) {
+    req.log.error({ err: error }, "Error saving local upload");
+    res.status(500).json({ error: "Failed to save upload" });
+  }
+});
+
 router.get("/storage/objects/*path", async (req: Request, res: Response) => {
   try {
     const raw = req.params.path;
     const wildcardPath = Array.isArray(raw) ? raw.join("/") : raw;
     const objectPath = `/objects/${wildcardPath}`;
+
+    if (useLocalObjectStorage()) {
+      const local = await readLocalObject(objectPath);
+      if (!local) {
+        res.status(404).json({ error: "Object not found" });
+        return;
+      }
+      res.setHeader("Content-Type", local.contentType);
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      res.send(local.data);
+      return;
+    }
+
     const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
 
     // --- Protected route example (uncomment when using replit-auth) ---

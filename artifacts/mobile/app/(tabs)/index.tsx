@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
+  Image,
   Platform,
   ScrollView,
   StatusBar,
@@ -21,7 +22,9 @@ import { DEALS, MENU_ITEMS, MenuItem } from "@/constants/data";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBranch } from "@/contexts/BranchContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useMenu } from "@/contexts/MenuContext";
 import { useColors } from "@/hooks/useColors";
+import { resolveMenuImageUrl } from "@/lib/menuUtils";
 
 const ORDER_TYPES = [
   { id: "dinein", label: "dineIn", icon: "users" },
@@ -44,10 +47,16 @@ export default function HomeScreen() {
   const router = useRouter();
   const { selectedBranch, orderType, setOrderType } = useBranch();
   const { user, availableTier } = useAuth();
+  const { menuItems } = useMenu();
   const { t, language } = useLanguage();
 
-  const popularItems = MENU_ITEMS.filter((i) => i.popular).slice(0, 8);
-  const zingerBurger = MENU_ITEMS.find((i) => i.id === "bu1");
+  const popularItems = menuItems.filter((i) => i.popular).slice(0, 8);
+  const zingerBurger = menuItems.find((i) => i.id === "bu1") ?? MENU_ITEMS.find((i) => i.id === "bu1");
+  const promoImageSource = zingerBurger
+    ? resolveMenuImageUrl(zingerBurger.imageUrl)
+      ? { uri: resolveMenuImageUrl(zingerBurger.imageUrl) }
+      : zingerBurger.image
+    : undefined;
 
   // Animations
   const headerFade = useRef(new Animated.Value(0)).current;
@@ -87,9 +96,9 @@ export default function HomeScreen() {
       >
         <Animated.View style={{ opacity: headerFade, transform: [{ translateY: headerSlide }] }}>
           <View style={styles.headerTop}>
-            <View style={styles.headerBrand}>
-              <View style={styles.logoChip}>
-                <Text style={[styles.logoChipText, { color: colors.primary }]}>RFC</Text>
+            <View style={styles.brandLogo}>
+              <View style={styles.brandLogoMark}>
+                <Text style={styles.brandLogoIcon}>🍗</Text>
               </View>
               <View>
                 <Text style={styles.rfcTitle}>Real Farmers Chicken</Text>
@@ -100,13 +109,17 @@ export default function HomeScreen() {
                   </Text>
                 </View>
               </View>
-            </View>
+            </View> 
             <TouchableOpacity
               style={styles.profileBtn}
               onPress={() => user ? router.push("/(tabs)/profile") : router.push("/login")}
             >
               {user ? (
-                <Text style={styles.profileInitial}>{user.name.charAt(0).toUpperCase()}</Text>
+                user.profilePicUrl ? (
+                  <Image source={{ uri: user.profilePicUrl }} style={styles.profileAvatar} />
+                ) : (
+                  <Text style={styles.profileInitial}>{user.name.charAt(0).toUpperCase()}</Text>
+                )
               ) : (
                 <Feather name="user" size={18} color="#FFF" />
               )}
@@ -262,9 +275,13 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 <View style={styles.promoRight}>
-                  <View style={styles.promoCircle}>
-                    <Feather name="layers" size={36} color="rgba(255,255,255,0.55)" />
-                  </View>
+                  {promoImageSource ? (
+                    <Image source={promoImageSource} style={styles.promoImage} resizeMode="contain" />
+                  ) : (
+                    <View style={styles.promoCircle}>
+                      <Feather name="layers" size={36} color="rgba(255,255,255,0.55)" />
+                    </View>
+                  )}
                 </View>
               </LinearGradient>
             </TouchableOpacity>
@@ -317,6 +334,25 @@ const styles = StyleSheet.create({
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 4, elevation: 4,
   },
   logoChipText: { fontSize: 16, fontFamily: "Inter_700Bold", letterSpacing: 1.5 },
+  brandLogo: { flexDirection: "row", alignItems: "center", gap: 10 },
+  brandLogoMark: {
+    width: 46,
+    height: 46,
+    borderRadius: 22,
+    backgroundColor: "#1B5E20",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#C8102E",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  brandLogoIcon: { fontSize: 24, color: "#FFD54F" },
+  brandLogoText: { color: "#C8102E", fontFamily: "Inter_700Bold", letterSpacing: 1 },
+  profileAvatar: { width: 36, height: 36, borderRadius: 18 },
   rfcTitle: { color: "#FFFFFF", fontSize: 14, fontFamily: "Inter_700Bold", letterSpacing: 0.3 },
   greetRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
   openDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#4CAF50" },
@@ -365,6 +401,7 @@ const styles = StyleSheet.create({
   promoOrderBtnText: { color: "#C8102E", fontSize: 13, fontFamily: "Inter_700Bold" },
   promoRight: { alignItems: "center", justifyContent: "center" },
   promoCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: "rgba(255,255,255,0.12)", justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "rgba(255,255,255,0.2)" },
+  promoImage: { width: 94, height: 94, borderRadius: 44, backgroundColor: "rgba(255,255,255,0.12)" },
   catGrid: { flexDirection: "row", flexWrap: "wrap", paddingHorizontal: 16, gap: 10 },
   catTile: { borderRadius: 16, borderWidth: 1, alignItems: "center", justifyContent: "center", gap: 8, padding: 14, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 1 },
   catIconBox: { width: 44, height: 44, borderRadius: 12, justifyContent: "center", alignItems: "center" },

@@ -2,9 +2,11 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
   Alert,
   Animated,
+  Image,
   Linking,
   Platform,
   ScrollView,
@@ -34,7 +36,7 @@ export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { user, signOut, removeAddress, setDefaultAddress, availableTier } = useAuth();
+  const { user, signOut, removeAddress, setDefaultAddress, uploadProfilePic, availableTier } = useAuth();
   const { selectedBranch } = useBranch();
   const { orders } = useOrders();
   const { language, setLanguage, t } = useLanguage();
@@ -76,6 +78,28 @@ export default function ProfileScreen() {
     );
   };
 
+  const handlePickProfilePic = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert(
+        language === "ur" ? "اجازت درکار ہے" : "Permission Required",
+        language === "ur" ? "براہ کرم اپنی تصاویر تک رسائی کی اجازت دیں۔" : "Please allow access to your photos.",
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled && result.assets?.length) {
+      await uploadProfilePic(result.assets[0].uri);
+    }
+  };
+
   const handleRemoveAddress = (id: string) => {
     Alert.alert(
       language === "ur" ? "پتہ ہٹائیں" : "Remove Address",
@@ -108,19 +132,27 @@ export default function ProfileScreen() {
       {/* Header */}
       <LinearGradient colors={[colors.darkGreen, colors.primary]} style={styles.header}>
         <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }], alignItems: "center" }}>
-          <View style={styles.avatarCircle}>
+          <TouchableOpacity onPress={user ? handlePickProfilePic : undefined} style={styles.avatarCircle} activeOpacity={0.8}>
             {user ? (
-              <Text style={[styles.avatarInitial, { color: colors.primary }]}>
+              user.profilePicUrl ? (
+                <Image source={{ uri: user.profilePicUrl }} style={styles.avatarImage} />
+              ) : (
+                <Text style={[styles.avatarInitial, { color: colors.primary }]}>
                 {user.name.charAt(0).toUpperCase()}
               </Text>
+              )
             ) : (
               <Feather name="user" size={34} color={colors.primary} />
             )}
-          </View>
+          </TouchableOpacity>
           {user ? (
             <View style={styles.userInfo}>
               <Text style={styles.userName}>{user.name}</Text>
               <Text style={styles.userPhone}>{user.phone}</Text>
+              <TouchableOpacity style={styles.uploadBtn} onPress={handlePickProfilePic} activeOpacity={0.8}>
+                <Feather name="camera" size={14} color="#FFF" />
+                <Text style={styles.uploadBtnText}>{language === "ur" ? "پروفائل تصویر اپ لوڈ کریں" : "Upload Profile Photo"}</Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={handleSignOut} style={styles.signOutChip}>
                 <Feather name="log-out" size={12} color="rgba(255,255,255,0.8)" />
                 <Text style={styles.signOutText}>{t("signOut")}</Text>
@@ -428,8 +460,28 @@ const styles = StyleSheet.create({
     justifyContent: "center", alignItems: "center", marginBottom: 14,
     shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 6,
   },
+  avatarImage: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+  },
   avatarInitial: { fontSize: 32, fontFamily: "Inter_700Bold" },
   userInfo: { alignItems: "center" },
+  uploadBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 999,
+  },
+  uploadBtnText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+  },
   userName: { color: "#FFFFFF", fontSize: 20, fontFamily: "Inter_700Bold", marginBottom: 3 },
   userPhone: { color: "rgba(255,255,255,0.75)", fontSize: 13, fontFamily: "Inter_400Regular", marginBottom: 12 },
   signOutChip: {

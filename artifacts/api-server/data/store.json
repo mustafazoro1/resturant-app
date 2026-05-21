@@ -1,0 +1,248 @@
+{
+  "menuItems": [
+    {
+      "id": "m1",
+      "name": "Zinger Burger",
+      "description": "Crispy fried chicken fillet with spicy mayo and lettuce",
+      "price": 650,
+      "category": "Burgers",
+      "available": true,
+      "spicy": true,
+      "popular": true,
+      "calories": 520,
+      "imageUrl": null
+    },
+    {
+      "id": "m2",
+      "name": "RFC Mighty Box",
+      "description": "2 pieces chicken, fries, coleslaw and a drink",
+      "price": 1200,
+      "category": "Deals",
+      "available": true,
+      "spicy": false,
+      "popular": true,
+      "calories": 1100,
+      "imageUrl": null
+    },
+    {
+      "id": "m3",
+      "name": "Crispy Strips (3pc)",
+      "description": "Tender chicken strips with your choice of dipping sauce",
+      "price": 490,
+      "category": "Chicken",
+      "available": true,
+      "spicy": false,
+      "popular": true,
+      "calories": 380,
+      "imageUrl": null
+    },
+    {
+      "id": "m4",
+      "name": "Spicy Wings (6pc)",
+      "description": "Hot and crispy chicken wings with RFC signature spice blend",
+      "price": 580,
+      "category": "Chicken",
+      "available": true,
+      "spicy": true,
+      "popular": false,
+      "calories": 460,
+      "imageUrl": null
+    },
+    {
+      "id": "m5",
+      "name": "Chicken Wrap",
+      "description": "Grilled or crispy chicken in a soft tortilla with fresh veggies",
+      "price": 420,
+      "category": "Wraps",
+      "available": true,
+      "spicy": false,
+      "popular": false,
+      "calories": 340,
+      "imageUrl": null
+    },
+    {
+      "id": "m6",
+      "name": "Spicy Wrap",
+      "description": "Crispy chicken, jalapeños, and hot sauce in a tortilla",
+      "price": 450,
+      "category": "Wraps",
+      "available": true,
+      "spicy": true,
+      "popular": false,
+      "calories": 360,
+      "imageUrl": null
+    },
+    {
+      "id": "m7",
+      "name": "Loaded Fries",
+      "description": "Crispy fries topped with cheese sauce and jalapeños",
+      "price": 290,
+      "category": "Sides",
+      "available": true,
+      "spicy": false,
+      "popular": true,
+      "calories": 420,
+      "imageUrl": null
+    },
+    {
+      "id": "m8",
+      "name": "Coleslaw",
+      "description": "Creamy house-made coleslaw",
+      "price": 120,
+      "category": "Sides",
+      "available": true,
+      "spicy": false,
+      "popular": false,
+      "calories": 130,
+      "imageUrl": null
+    },
+    {
+      "id": "m9",
+      "name": "Pepsi (Large)",
+      "description": "Chilled Pepsi 500ml",
+      "price": 150,
+      "category": "Drinks",
+      "available": true,
+      "spicy": false,
+      "popular": false,
+      "calories": 210,
+      "imageUrl": null
+    },
+    {
+      "id": "m10",
+      "name": "Chocolate Lava Cake",
+      "description": "Warm chocolate cake with a gooey molten center",
+      "price": 280,
+      "category": "Desserts",
+      "available": false,
+      "spicy": false,
+      "popular": false,
+      "calories": 380,
+      "imageUrl": null
+    },
+    {
+      "id": "m11",
+      "name": "Family Feast",
+      "description": "8pc chicken, 2 large fries, 4 drinks, coleslaw",
+      "price": 3200,
+      "category": "Deals",
+      "available": true,
+      "spicy": false,
+      "popular": true,
+      "calories": null,
+      "imageUrl": null
+    },
+    {
+      "id": "m12",
+      "name": "Quarter Pounder",
+      "description": "Juicy beef patty with RFC special sauce",
+      "price": 720,
+      "category": "Burgers",
+      "available": true,
+      "spicy": false,
+      "popular": false,
+      "calories": 580,
+      "imageUrl": null
+    },
+    {
+      "id": "m1779365722554",
+      "name": "Beef Burger",
+      "description": "joicy beefy burger with more then 10 diffrent flavers",
+      "price": 899,
+      "category": "Burgers",
+      "available": true,
+      "spicy": false,
+      "popular": true,
+      "calories": 550,
+      "imageUrl": "/api/storage/objects/uploads/ed508af0-ed7c-486f-b9cc-bd77eac01b58"
+    }
+  ],
+  "orders": [
+    {
+      "id": "o1001",
+      "customerName": "Ahmed Raza",
+      "customerPhone": "0300-1234567",
+      "branch": "DHA Branch",
+      "orderType": "Dine In",
+      "items": [
+        {
+          "name": "RFC Mighty Box",
+          "quantity": 2,
+          "price": 1200
+        },
+        {
+          "name": "Pepsi (Large)",
+          "quantity": 2,
+          "price": 150
+        }
+      ],
+      "total": 2700,
+      "status": "Preparing",
+      "createdAt": "2026-05-21T10:xx:xx.000Z"
+    },
+    {
+      "id": "o1002",
+      "customerName": "Sara Khan",
+      "customerPhone": "0321-9876543",
+      "branch": "Clifton Branch",
+      "orderType": "Delivery",
+      "items": [
+        {
+          "name": "Zinger Burger",
+          "quantity": 1,
+          "price": 650
+        },
+        {
+          "name": "Loaded Fries",
+          "quantity": 1,
+          "price": 290
+        },
+        {
+          "name": "Pepsi (Large)",
+          "quantity": 1,
+          "price": 150
+        }
+      ],
+      "total": 1090,
+      "status": "Received",
+      "createdAt": "2026-05-21T10:xx:xx.000Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-deals",
+      "name": "Deals",
+      "slug": "deals"
+    },
+    {
+      "id": "cat-chicken",
+      "name": "Chicken",
+      "slug": "chicken"
+    },
+    {
+      "id": "cat-burgers",
+      "name": "Burgers",
+      "slug": "burgers"
+    },
+    {
+      "id": "cat-wraps",
+      "name": "Wraps",
+      "slug": "wraps"
+    },
+    {
+      "id": "cat-sides",
+      "name": "Sides",
+      "slug": "sides"
+    },
+    {
+      "id": "cat-drinks",
+      "name": "Drinks",
+      "slug": "drinks"
+    },
+    {
+      "id": "cat-desserts",
+      "name": "Desserts",
+      "slug": "desserts"
+    }
+  ]
+}

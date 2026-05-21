@@ -26,6 +26,10 @@ app.use(
   }),
 );
 app.use(cors());
+app.use(
+  "/api/storage/local-upload",
+  express.raw({ type: () => true, limit: "15mb" }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

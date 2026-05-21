@@ -24,6 +24,7 @@ type CategoryFormValues = z.infer<typeof categorySchema>;
 
 export default function Categories() {
   const { data: categories, isLoading } = useListAdminCategories();
+  const categoriesArray = Array.isArray(categories) ? categories : [];
   const createCategory = useCreateAdminCategory();
   const deleteCategory = useDeleteAdminCategory();
   const queryClient = useQueryClient();
@@ -152,7 +153,7 @@ export default function Categories() {
           </Dialog>
         </div>
 
-        {(!categories || categories.length === 0) ? (
+        {!categoriesArray || categoriesArray.length === 0 ? (
           <div className="border border-dashed rounded-xl p-12 text-center text-muted-foreground">
             <Tag className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="font-medium">No categories yet</p>
@@ -160,7 +161,7 @@ export default function Categories() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {categories.map((cat) => (
+            {categoriesArray.map((cat) => (
               <div
                 key={cat.id}
                 className="bg-card border rounded-xl p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow"

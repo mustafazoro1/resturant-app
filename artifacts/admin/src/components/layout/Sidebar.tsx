@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/orders", label: "Live Orders", icon: ReceiptText },
   { href: "/menu", label: "Menu Management", icon: MenuIcon },
   { href: "/categories", label: "Categories", icon: Tag },

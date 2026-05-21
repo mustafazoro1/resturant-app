@@ -13,9 +13,7 @@ interface FoodCardProps {
   horizontal?: boolean;
 }
 
-const API_BASE = process.env["EXPO_PUBLIC_DOMAIN"]
-  ? `https://${process.env["EXPO_PUBLIC_DOMAIN"]}`
-  : "";
+import { resolveMenuImageUrl } from "@/lib/menuUtils";
 
 export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
   const colors = useColors();
@@ -36,11 +34,8 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
     }
   };
 
-  const resolvedImageUrl = item.imageUrl
-    ? item.imageUrl.startsWith("http")
-      ? item.imageUrl
-      : `${API_BASE}${item.imageUrl}`
-    : null;
+  const resolvedImageUrl = resolveMenuImageUrl(item.imageUrl);
+  const imageSource = resolvedImageUrl ? { uri: resolvedImageUrl } : item.image ?? undefined;
 
   if (horizontal) {
     return (
@@ -49,16 +44,12 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
         activeOpacity={0.85}
         style={[styles.hCard, { backgroundColor: colors.card, borderColor: colors.border }]}
       >
-        {resolvedImageUrl ? (
+        {imageSource ? (
           <Image
-            source={{ uri: resolvedImageUrl }}
+            source={imageSource}
             style={styles.hImageFull}
             resizeMode="cover"
           />
-        ) : item.image ? (
-          <LinearGradient colors={gradColors} style={styles.hImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-            <Image source={item.image} style={styles.hImage} resizeMode="contain" />
-          </LinearGradient>
         ) : (
           <LinearGradient colors={gradColors} style={styles.hImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
             <Feather name="layers" size={28} color="rgba(255,255,255,0.7)" />
@@ -92,30 +83,11 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
             <Text style={[styles.hPrice, { color: colors.primary }]}>
               Rs. {item.price.toLocaleString()}
             </Text>
-            {quantity === 0 ? (
-              <TouchableOpacity
-                onPress={handleAdd}
-                style={[styles.addBtn, { backgroundColor: colors.accent }]}
-              >
-                <Feather name="plus" size={16} color="#FFF" />
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.quantityControl}>
-                <TouchableOpacity
-                  onPress={handleDecrement}
-                  style={[styles.qBtn, { backgroundColor: colors.border }]}
-                >
-                  <Feather name="minus" size={13} color={colors.foreground} />
-                </TouchableOpacity>
-                <Text style={[styles.qCount, { color: colors.foreground }]}>{quantity}</Text>
-                <TouchableOpacity
-                  onPress={handleAdd}
-                  style={[styles.qBtn, { backgroundColor: colors.accent }]}
-                >
-                  <Feather name="plus" size={13} color="#FFF" />
-                </TouchableOpacity>
+            {quantity > 0 ? (
+              <View style={[styles.quantityBadge, { backgroundColor: colors.accent }]}> 
+                <Text style={[styles.quantityBadgeText, { color: "#FFF" }]}>{quantity} in cart</Text>
               </View>
-            )}
+            ) : null}
           </View>
         </View>
       </TouchableOpacity>
@@ -128,19 +100,15 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
       activeOpacity={0.85}
       style={[styles.vCard, { backgroundColor: colors.card, borderColor: colors.border }]}
     >
-      {resolvedImageUrl ? (
+      {imageSource ? (
         <Image
-          source={{ uri: resolvedImageUrl }}
+          source={imageSource}
           style={styles.vImageFull}
           resizeMode="cover"
         />
       ) : (
         <LinearGradient colors={gradColors} style={styles.vImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-          {item.image ? (
-            <Image source={item.image} style={styles.vImage} resizeMode="contain" />
-          ) : (
-            <Feather name="layers" size={24} color="rgba(255,255,255,0.7)" />
-          )}
+          <Feather name="layers" size={24} color="rgba(255,255,255,0.7)" />
         </LinearGradient>
       )}
       <View style={styles.vInfo}>
@@ -150,30 +118,13 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
         <Text style={[styles.vPrice, { color: colors.primary }]}>
           Rs. {item.price.toLocaleString()}
         </Text>
-        {quantity === 0 ? (
-          <TouchableOpacity
-            onPress={handleAdd}
-            style={[styles.vAddBtn, { backgroundColor: colors.accent }]}
-          >
-            <Feather name="plus" size={14} color="#FFF" />
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.vQuantityControl}>
-            <TouchableOpacity
-              onPress={handleDecrement}
-              style={[styles.qBtn, { backgroundColor: colors.border }]}
-            >
-              <Feather name="minus" size={12} color={colors.foreground} />
-            </TouchableOpacity>
-            <Text style={[styles.qCount, { color: colors.foreground }]}>{quantity}</Text>
-            <TouchableOpacity
-              onPress={handleAdd}
-              style={[styles.qBtn, { backgroundColor: colors.accent }]}
-            >
-              <Feather name="plus" size={12} color="#FFF" />
-            </TouchableOpacity>
+        {quantity > 0 ? (
+          <View style={styles.quantityBadgeContainer}>
+            <View style={[styles.quantityBadge, { backgroundColor: colors.accent }]}> 
+              <Text style={[styles.quantityBadgeText, { color: "#FFF" }]}>{quantity} in cart</Text>
+            </View>
           </View>
-        )}
+        ) : null}
       </View>
     </TouchableOpacity>
   );
@@ -276,6 +227,18 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_600SemiBold",
     minWidth: 18,
     textAlign: "center",
+  },
+  quantityBadgeContainer: {
+    marginTop: 8,
+  },
+  quantityBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  quantityBadgeText: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
   },
   vCard: {
     width: 150,

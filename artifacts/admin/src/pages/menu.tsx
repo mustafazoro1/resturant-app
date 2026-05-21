@@ -40,6 +40,9 @@ type MenuItemFormValues = z.infer<typeof menuItemSchema>;
 export default function Menu() {
   const { data: menuItems, isLoading } = useListAdminMenuItems();
   const { data: categories } = useListAdminCategories();
+  const menuItemsArray = Array.isArray(menuItems) ? menuItems : [];
+  const categoriesArray = Array.isArray(categories) ? categories : [];
+
   const queryClient = useQueryClient();
   const updateItem = useUpdateAdminMenuItem();
   const deleteItem = useDeleteAdminMenuItem();
@@ -53,19 +56,21 @@ export default function Menu() {
   
   const [uploadingImage, setUploadingImage] = useState(false);
 
+
+
   const filterCategories = useMemo(() => {
-    if (!menuItems) return [];
-    return Array.from(new Set(menuItems.map(i => i.category)));
-  }, [menuItems]);
+    if (!menuItemsArray.length) return [];
+    return Array.from(new Set(menuItemsArray.map(i => i.category)));
+  }, [menuItemsArray]);
 
   const filteredItems = useMemo(() => {
-    if (!menuItems) return [];
-    return menuItems.filter(i => {
+    if (!menuItemsArray.length) return [];
+    return menuItemsArray.filter(i => {
       const matchesSearch = i.name.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = categoryFilter === "all" || i.category === categoryFilter;
       return matchesSearch && matchesCategory;
     });
-  }, [menuItems, search, categoryFilter]);
+  }, [menuItemsArray, search, categoryFilter]);
 
   const handleToggleAvailability = (id: string, available: boolean) => {
     updateItem.mutate(
@@ -239,7 +244,7 @@ export default function Menu() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {(categories ?? []).map(c => (
+                              {(categoriesArray ?? []).map(c => (
                                 <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
                               ))}
                             </SelectContent>
@@ -383,7 +388,7 @@ export default function Menu() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {(categories ?? []).map(c => (
+                              {(categoriesArray ?? []).map(c => (
                                 <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
                               ))}
                             </SelectContent>

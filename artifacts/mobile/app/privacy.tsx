@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 import {
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -88,14 +89,14 @@ export default function PrivacyScreen() {
       showsVerticalScrollIndicator={false}
     >
       {/* Header Block */}
-      <View style={[styles.headerBlock, { backgroundColor: "#EEF2FF", borderColor: "#C7D2FE" }]}>
-        <View style={[styles.headerIcon, { backgroundColor: "#3730A3" }]}>
-          <Feather name="shield" size={20} color="#FFFFFF" />
+      <View style={[styles.headerBlock, { backgroundColor: '#F0FFF4', borderColor: colors.primary }]}>
+        <View style={[styles.headerIcon, { backgroundColor: colors.primary, borderRadius: 50 }]}>
+          <Feather name="shopping-bag" size={20} color="#FFD700" />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={[styles.headerTitle, { color: "#3730A3" }]}>Privacy Policy</Text>
+          <Text style={[styles.headerTitle, { color: "#E53E3E" }]}>RFC Pakistan</Text>
           <Text style={[styles.headerSub, { color: colors.mutedForeground }]}>
-            Last updated: May 2025 • RFC Pakistan
+            Official Privacy Policy • Real Farmers Chicken
           </Text>
         </View>
       </View>
@@ -119,11 +120,20 @@ export default function PrivacyScreen() {
         </View>
       ))}
 
-      <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <Feather name="lock" size={14} color={colors.mutedForeground} />
-        <Text style={[styles.footerText, { color: colors.mutedForeground }]}>
-          Your data is protected. RFC Pakistan © 2025.
-        </Text>
+      <View style={styles.signatureContainer}>
+        <Text style={[styles.signatureText, { color: colors.foreground }]}>Enjoy our signature</Text>
+        <Text style={[styles.zingerTitle, { color: colors.primary }]}>ZINGER BURGER</Text>
+        <Image 
+          source={{ uri: 'https://placeholder-url-to-your-zinger-burger-img.png' }} 
+          style={styles.signatureImage}
+          resizeMode="contain"
+        />
+        <View style={[styles.footer, { borderTopColor: colors.border, width: '100%' }]}>
+          <Feather name="lock" size={14} color={colors.mutedForeground} />
+          <Text style={[styles.footerText, { color: colors.mutedForeground }]}>
+            Your data is protected. RFC Pakistan © 2025.
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -194,6 +204,26 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: "Inter_400Regular",
     lineHeight: 20,
+  },
+  signatureContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+    paddingTop: 20,
+    gap: 8,
+  },
+  signatureText: {
+    fontSize: 14,
+    fontFamily: "Inter_700Bold",
+  },
+  zingerTitle: {
+    fontSize: 24,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 1,
+  },
+  signatureImage: {
+    width: 200,
+    height: 120,
+    marginBottom: 10,
   },
   footer: {
     flexDirection: "row",

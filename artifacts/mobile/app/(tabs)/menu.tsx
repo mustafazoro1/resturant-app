@@ -15,8 +15,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CategoryPill } from "@/components/CategoryPill";
 import { FoodCard } from "@/components/FoodCard";
-import { CATEGORIES, MENU_ITEMS, MenuItem } from "@/constants/data";
-import { useApiMenu } from "@/hooks/useApiMenu";
+import { CATEGORIES, MenuItem } from "@/constants/data";
+import { useMenu } from "@/contexts/MenuContext";
 import { useColors } from "@/hooks/useColors";
 
 export default function MenuScreen() {
@@ -24,7 +24,7 @@ export default function MenuScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const params = useLocalSearchParams<{ cat?: string }>();
-  const { apiItems } = useApiMenu();
+  const { menuItems } = useMenu();
 
   const [selectedCategory, setSelectedCategory] = useState(params.cat ?? "deals");
   const [search, setSearch] = useState("");
@@ -35,19 +35,7 @@ export default function MenuScreen() {
     }
   }, [params.cat]);
 
-  // Merge API imageUrls into local menu items (matched by id or name)
-  const mergedItems = useMemo<MenuItem[]>(() => {
-    if (!apiItems.length) return MENU_ITEMS;
-    const apiById = new Map(apiItems.map((a) => [a.id, a]));
-    const apiByName = new Map(apiItems.map((a) => [a.name.toLowerCase(), a]));
-    return MENU_ITEMS.map((item) => {
-      const apiItem = apiById.get(item.id) ?? apiByName.get(item.name.toLowerCase());
-      if (apiItem?.imageUrl) {
-        return { ...item, imageUrl: apiItem.imageUrl };
-      }
-      return item;
-    });
-  }, [apiItems]);
+  const mergedItems = menuItems;
 
   const filteredItems = useMemo(() => {
     const byCategory = mergedItems.filter((i) => i.category === selectedCategory);

@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import type { ImageSourcePropType } from "react-native";
 import {
   Animated,
   Dimensions,
@@ -20,7 +21,7 @@ const AUTO_SCROLL_MS = 3500;
 
 type Slide = {
   id: string;
-  image: ReturnType<typeof require>;
+  image: ImageSourcePropType;
   title: string;
   subtitle: string;
   tag: string;
