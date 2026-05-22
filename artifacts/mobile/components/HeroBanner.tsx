@@ -16,7 +16,7 @@ import {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const SLIDE_WIDTH = SCREEN_WIDTH;
-const SLIDE_HEIGHT = 190;
+const SLIDE_HEIGHT = 210;
 const AUTO_SCROLL_MS = 3500;
 
 type Slide = {
@@ -30,6 +30,7 @@ type Slide = {
   gradEnd: string;
   ctaLabel: string;
   ctaCat: string;
+  images: ImageSourcePropType[];
 };
 
 const SLIDES: Slide[] = [
@@ -44,6 +45,11 @@ const SLIDES: Slide[] = [
     gradEnd: "#2E7D32CC",
     ctaLabel: "View Deals",
     ctaCat: "deals",
+    images: [
+      require("../assets/images/hero-banner.png"),
+      require("../assets/images/hero-banner.png"),
+      require("../assets/images/hero-banner.png"),
+    ],
   },
   {
     id: "s2",
@@ -52,10 +58,15 @@ const SLIDES: Slide[] = [
     subtitle: "Pakistan's most loved crispy burger",
     tag: "BESTSELLER",
     tagColor: "#FF8F00",
-    gradStart: "#7B1C1CCC",
-    gradEnd: "#C8102ECC",
+    gradStart: "#C62828CC",
+    gradEnd: "#EF6C00CC",
     ctaLabel: "Order Now",
     ctaCat: "burgers",
+    images: [
+      require("../assets/images/burger.png"),
+      require("../assets/images/burger.png"),
+      require("../assets/images/burger.png"),
+    ],
   },
   {
     id: "s3",
@@ -68,6 +79,11 @@ const SLIDES: Slide[] = [
     gradEnd: "#E64A19CC",
     ctaLabel: "Explore Menu",
     ctaCat: "chicken",
+    images: [
+      require("../assets/images/chicken.png"),
+      require("../assets/images/chicken.png"),
+      require("../assets/images/chicken.png"),
+    ],
   },
 ];
 
@@ -112,7 +128,12 @@ export function HeroBanner() {
     <TouchableOpacity
       activeOpacity={0.9}
       style={styles.slide}
-      onPress={() => router.push({ pathname: "/(tabs)/menu", params: { cat: item.ctaCat } })}
+      onPress={() =>
+        router.navigate({
+          pathname: "/(tabs)/menu",
+          params: { cat: item.ctaCat },
+        })
+      }
     >
       <Image source={item.image} style={styles.slideImage} resizeMode="cover" />
       <LinearGradient
@@ -125,8 +146,12 @@ export function HeroBanner() {
           <View style={[styles.tagPill, { backgroundColor: item.tagColor }]}>
             <Text style={styles.tagText}>{item.tag}</Text>
           </View>
-          <Text style={styles.slideTitle} numberOfLines={2}>{item.title}</Text>
-          <Text style={styles.slideSubtitle} numberOfLines={1}>{item.subtitle}</Text>
+          <Text style={styles.slideTitle} numberOfLines={2}>
+            {item.title}
+          </Text>
+          <Text style={styles.slideSubtitle} numberOfLines={1}>
+            {item.subtitle}
+          </Text>
           <View style={styles.cta}>
             <Text style={styles.ctaText}>{item.ctaLabel}</Text>
             <Feather name="arrow-right" size={12} color="#FFFFFF" />
@@ -148,7 +173,11 @@ export function HeroBanner() {
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={handleScroll}
         scrollEventThrottle={16}
-        getItemLayout={(_, index) => ({ length: SLIDE_WIDTH, offset: SLIDE_WIDTH * index, index })}
+        getItemLayout={(_, index) => ({
+          length: SLIDE_WIDTH,
+          offset: SLIDE_WIDTH * index,
+          index,
+        })}
       />
       <View style={styles.dots}>
         {SLIDES.map((_, i) => (
@@ -157,8 +186,14 @@ export function HeroBanner() {
             style={[
               styles.dot,
               {
-                width: dotAnim[i]!.interpolate({ inputRange: [0, 1], outputRange: [6, 20] }),
-                opacity: dotAnim[i]!.interpolate({ inputRange: [0, 1], outputRange: [0.4, 1] }),
+                width: dotAnim[i]!.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [6, 20],
+                }),
+                opacity: dotAnim[i]!.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.4, 1],
+                }),
                 backgroundColor: "#FFFFFF",
               },
             ]}
@@ -210,9 +245,6 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_700Bold",
     color: "#FFFFFF",
     lineHeight: 24,
-    textShadowColor: "rgba(0,0,0,0.3)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
   },
   slideSubtitle: {
     fontSize: 12,

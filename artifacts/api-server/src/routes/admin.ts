@@ -33,6 +33,11 @@ type MenuItem = {
   popular: boolean;
   calories: number | null;
   imageUrl: string | null;
+  offerPercentage?: number | null;
+  offerLabel?: string | null;
+  offerActive?: boolean;
+  offerStartDate?: string | null;
+  offerEndDate?: string | null;
 };
 
 type OrderItem = { name: string; quantity: number; price: number };
@@ -286,6 +291,11 @@ router.post("/admin/menu", async (req, res): Promise<void> => {
     popular: parsed.data.popular ?? false,
     calories: parsed.data.calories ?? null,
     imageUrl: parsed.data.imageUrl ?? null,
+    offerPercentage: parsed.data.offerPercentage ?? null,
+    offerLabel: parsed.data.offerLabel ?? null,
+    offerActive: parsed.data.offerActive ?? false,
+    offerStartDate: parsed.data.offerStartDate ?? null,
+    offerEndDate: parsed.data.offerEndDate ?? null,
   };
   store.menuItems.push(newItem);
   await saveStore(store);

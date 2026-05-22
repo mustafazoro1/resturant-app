@@ -404,6 +404,18 @@ components:
           type: ["integer", "null"]
         imageUrl:
           type: ["string", "null"]
+        offerPercentage:
+          type: ["integer", "null"]
+          minimum: 0
+          maximum: 100
+        offerLabel:
+          type: ["string", "null"]
+        offerActive:
+          type: boolean
+        offerStartDate:
+          type: ["string", "null"]
+        offerEndDate:
+          type: ["string", "null"]
 
     AdminMenuItemInput:
       type: object
@@ -427,6 +439,18 @@ components:
           type: ["integer", "null"]
         imageUrl:
           type: ["string", "null"]
+        offerPercentage:
+          type: ["integer", "null"]
+          minimum: 0
+          maximum: 100
+        offerLabel:
+          type: ["string", "null"]
+        offerActive:
+          type: boolean
+        offerStartDate:
+          type: ["string", "null"]
+        offerEndDate:
+          type: ["string", "null"]
 
     AdminMenuItemUpdate:
       type: object
@@ -448,6 +472,18 @@ components:
         calories:
           type: ["integer", "null"]
         imageUrl:
+          type: ["string", "null"]
+        offerPercentage:
+          type: ["integer", "null"]
+          minimum: 0
+          maximum: 100
+        offerLabel:
+          type: ["string", "null"]
+        offerActive:
+          type: boolean
+        offerStartDate:
+          type: ["string", "null"]
+        offerEndDate:
           type: ["string", "null"]
 
     AdminOrder:

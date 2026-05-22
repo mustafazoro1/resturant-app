@@ -18,4 +18,17 @@ export interface AdminMenuItemUpdate {
   calories?: number | null;
   /** @nullable */
   imageUrl?: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     * @nullable
+     */
+  offerPercentage?: number | null;
+  /** @nullable */
+  offerLabel?: string | null;
+  offerActive?: boolean;
+  /** @nullable */
+  offerStartDate?: string | null;
+  /** @nullable */
+  offerEndDate?: string | null;
 }

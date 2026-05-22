@@ -1,12 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { BRANCHES, Branch } from "@/constants/data";
 
 interface BranchContextType {
   selectedBranch: Branch | null;
   selectBranch: (branch: Branch) => void;
-  orderType: "dinein" | "takeaway" | "delivery";
-  setOrderType: (type: "dinein" | "takeaway" | "delivery") => void;
+  orderType: "takeaway" | "delivery";
+  setOrderType: (type: "takeaway" | "delivery") => void;
 }
 
 const BranchContext = createContext<BranchContextType>({
@@ -17,8 +23,12 @@ const BranchContext = createContext<BranchContextType>({
 });
 
 export function BranchProvider({ children }: { children: React.ReactNode }) {
-  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(BRANCHES[0]);
-  const [orderType, setOrderTypeState] = useState<"dinein" | "takeaway" | "delivery">("takeaway");
+  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(
+    BRANCHES[0],
+  );
+  const [orderType, setOrderTypeState] = useState<"takeaway" | "delivery">(
+    "takeaway",
+  );
 
   useEffect(() => {
     AsyncStorage.getItem("rfc_branch").then((data) => {
@@ -30,7 +40,7 @@ export function BranchProvider({ children }: { children: React.ReactNode }) {
       }
     });
     AsyncStorage.getItem("rfc_order_type").then((data) => {
-      if (data === "dinein" || data === "takeaway" || data === "delivery") {
+      if (data === "takeaway" || data === "delivery") {
         setOrderTypeState(data);
       }
     });
@@ -41,13 +51,15 @@ export function BranchProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem("rfc_branch", JSON.stringify(branch));
   }, []);
 
-  const setOrderType = useCallback((type: "dinein" | "takeaway" | "delivery") => {
+  const setOrderType = useCallback((type: "takeaway" | "delivery") => {
     setOrderTypeState(type);
     AsyncStorage.setItem("rfc_order_type", type);
   }, []);
 
   return (
-    <BranchContext.Provider value={{ selectedBranch, selectBranch, orderType, setOrderType }}>
+    <BranchContext.Provider
+      value={{ selectedBranch, selectBranch, orderType, setOrderType }}
+    >
       {children}
     </BranchContext.Provider>
   );

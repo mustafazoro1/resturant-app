@@ -23,7 +23,12 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
 
   const handleAdd = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    addItem({ itemId: item.id, name: item.name, price: item.price, category: item.category });
+    addItem({
+      itemId: item.id,
+      name: item.name,
+      price: item.price,
+      category: item.category,
+    });
   };
 
   const handleDecrement = () => {
@@ -35,23 +40,42 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
   };
 
   const resolvedImageUrl = resolveMenuImageUrl(item.imageUrl);
-  const imageSource = resolvedImageUrl ? { uri: resolvedImageUrl } : item.image ?? undefined;
+  const imageSource = resolvedImageUrl
+    ? { uri: resolvedImageUrl }
+    : (item.image ?? undefined);
+  const hasOffer =
+    item.offerActive &&
+    typeof item.offerPercentage === "number" &&
+    item.offerPercentage > 0;
+  const salePrice = hasOffer
+    ? Math.round(item.price * (1 - (item.offerPercentage || 0) / 100))
+    : item.price;
 
   if (horizontal) {
     return (
       <TouchableOpacity
         onPress={() => onPress(item)}
         activeOpacity={0.85}
-        style={[styles.hCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+        style={[
+          styles.hCard,
+          { backgroundColor: colors.card, borderColor: colors.border },
+        ]}
       >
         {imageSource ? (
-          <Image
-            source={imageSource}
-            style={styles.hImageFull}
-            resizeMode="cover"
-          />
+          <View style={styles.hImageContainer}>
+            <Image
+              source={imageSource}
+              style={styles.hImageFull}
+              resizeMode="contain"
+            />
+          </View>
         ) : (
-          <LinearGradient colors={gradColors} style={styles.hImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+          <LinearGradient
+            colors={gradColors}
+            style={styles.hImagePlaceholder}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
             <Feather name="layers" size={28} color="rgba(255,255,255,0.7)" />
           </LinearGradient>
         )}
@@ -59,35 +83,75 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
           <View style={styles.badgeRow}>
             {item.popular && (
               <View style={[styles.badge, { backgroundColor: "#E8F5E9" }]}>
-                <Text style={[styles.badgeText, { color: colors.primary }]}>Popular</Text>
+                <Text style={[styles.badgeText, { color: colors.primary }]}>
+                  Popular
+                </Text>
               </View>
             )}
             {item.spicy && (
               <View style={[styles.badge, { backgroundColor: "#FFEBEE" }]}>
-                <Text style={[styles.badgeText, { color: "#C8102E" }]}>Spicy</Text>
+                <Text style={[styles.badgeText, { color: "#C8102E" }]}>
+                  Spicy
+                </Text>
               </View>
             )}
             {item.isNew && (
               <View style={[styles.badge, { backgroundColor: "#FFF8E1" }]}>
-                <Text style={[styles.badgeText, { color: "#F57F17" }]}>New</Text>
+                <Text style={[styles.badgeText, { color: "#F57F17" }]}>
+                  New
+                </Text>
               </View>
             )}
           </View>
-          <Text style={[styles.hName, { color: colors.foreground }]} numberOfLines={1}>
+          <Text
+            style={[styles.hName, { color: colors.foreground }]}
+            numberOfLines={1}
+          >
             {item.name}
           </Text>
-          <Text style={[styles.hDesc, { color: colors.mutedForeground }]} numberOfLines={2}>
+          <Text
+            style={[styles.hDesc, { color: colors.mutedForeground }]}
+            numberOfLines={2}
+          >
             {item.description}
           </Text>
           <View style={styles.hBottom}>
-            <Text style={[styles.hPrice, { color: colors.primary }]}>
-              Rs. {item.price.toLocaleString()}
-            </Text>
-            {quantity > 0 ? (
-              <View style={[styles.quantityBadge, { backgroundColor: colors.accent }]}> 
-                <Text style={[styles.quantityBadgeText, { color: "#FFF" }]}>{quantity} in cart</Text>
-              </View>
-            ) : null}
+            <View>
+              <Text style={[styles.hPrice, { color: colors.primary }]}>
+                Rs. {salePrice.toLocaleString()}
+              </Text>
+              {hasOffer ? (
+                <Text style={styles.hOriginalPrice}>
+                  Rs. {item.price.toLocaleString()}
+                </Text>
+              ) : null}
+            </View>
+            <View style={styles.hActions}>
+              {hasOffer ? (
+                <View
+                  style={[
+                    styles.offerBadge,
+                    { backgroundColor: "rgba(200,16,46,0.12)" },
+                  ]}
+                >
+                  <Text style={[styles.offerBadgeText, { color: "#C8102E" }]}>
+                    {item.offerLabel || `${item.offerPercentage}% OFF`}
+                  </Text>
+                </View>
+              ) : null}
+              {quantity > 0 ? (
+                <View
+                  style={[
+                    styles.quantityBadge,
+                    { backgroundColor: colors.accent },
+                  ]}
+                >
+                  <Text style={[styles.quantityBadgeText, { color: "#FFF" }]}>
+                    {quantity} in cart
+                  </Text>
+                </View>
+              ) : null}
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -98,30 +162,66 @@ export function FoodCard({ item, onPress, horizontal = false }: FoodCardProps) {
     <TouchableOpacity
       onPress={() => onPress(item)}
       activeOpacity={0.85}
-      style={[styles.vCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+      style={[
+        styles.vCard,
+        { backgroundColor: colors.card, borderColor: colors.border },
+      ]}
     >
       {imageSource ? (
-        <Image
-          source={imageSource}
-          style={styles.vImageFull}
-          resizeMode="cover"
-        />
+        <View style={styles.vImageContainer}>
+          <Image
+            source={imageSource}
+            style={styles.vImageFull}
+            resizeMode="contain"
+          />
+        </View>
       ) : (
-        <LinearGradient colors={gradColors} style={styles.vImagePlaceholder} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+        <LinearGradient
+          colors={gradColors}
+          style={styles.vImagePlaceholder}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
           <Feather name="layers" size={24} color="rgba(255,255,255,0.7)" />
         </LinearGradient>
       )}
       <View style={styles.vInfo}>
-        <Text style={[styles.vName, { color: colors.foreground }]} numberOfLines={2}>
+        <Text
+          style={[styles.vName, { color: colors.foreground }]}
+          numberOfLines={2}
+        >
           {item.name}
         </Text>
-        <Text style={[styles.vPrice, { color: colors.primary }]}>
-          Rs. {item.price.toLocaleString()}
-        </Text>
+        <View style={styles.vPriceRow}>
+          <Text style={[styles.vPrice, { color: colors.primary }]}>
+            Rs. {salePrice.toLocaleString()}
+          </Text>
+          {hasOffer ? (
+            <Text style={styles.vOriginalPrice}>
+              Rs. {item.price.toLocaleString()}
+            </Text>
+          ) : null}
+        </View>
+        {hasOffer ? (
+          <View
+            style={[
+              styles.offerBadge,
+              { backgroundColor: "rgba(200,16,46,0.12)" },
+            ]}
+          >
+            <Text style={[styles.offerBadgeText, { color: "#C8102E" }]}>
+              {item.offerLabel || `${item.offerPercentage}% OFF`}
+            </Text>
+          </View>
+        ) : null}
         {quantity > 0 ? (
           <View style={styles.quantityBadgeContainer}>
-            <View style={[styles.quantityBadge, { backgroundColor: colors.accent }]}> 
-              <Text style={[styles.quantityBadgeText, { color: "#FFF" }]}>{quantity} in cart</Text>
+            <View
+              style={[styles.quantityBadge, { backgroundColor: colors.accent }]}
+            >
+              <Text style={[styles.quantityBadgeText, { color: "#FFF" }]}>
+                {quantity} in cart
+              </Text>
             </View>
           </View>
         ) : null}
@@ -143,14 +243,21 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  hImageContainer: {
+    width: 110,
+    height: 110,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   hImagePlaceholder: {
-    width: 90,
-    height: 100,
+    width: 110,
+    height: 110,
     justifyContent: "center",
     alignItems: "center",
   },
   hImageFull: {
-    width: 90,
+    width: 100,
     height: 100,
   },
   hImage: {
@@ -190,12 +297,45 @@ const styles = StyleSheet.create({
   },
   hBottom: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
+    gap: 8,
+  },
+  hActions: {
+    alignItems: "flex-end",
+    gap: 6,
   },
   hPrice: {
     fontSize: 14,
     fontFamily: "Inter_700Bold",
+  },
+  hOriginalPrice: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(0,0,0,0.5)",
+    textDecorationLine: "line-through",
+    marginTop: 2,
+  },
+  offerBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  offerBadgeText: {
+    fontSize: 10,
+    fontFamily: "Inter_600SemiBold",
+  },
+  vPriceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 6,
+  },
+  vOriginalPrice: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(0,0,0,0.45)",
+    textDecorationLine: "line-through",
   },
   addBtn: {
     width: 30,
@@ -241,7 +381,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_600SemiBold",
   },
   vCard: {
-    width: 150,
+    width: 162,
     borderRadius: 14,
     borderWidth: 1,
     overflow: "hidden",
@@ -252,15 +392,22 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  vImageContainer: {
+    width: "100%",
+    height: 120,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   vImagePlaceholder: {
     width: "100%",
-    height: 90,
+    height: 120,
     justifyContent: "center",
     alignItems: "center",
   },
   vImageFull: {
-    width: "100%",
-    height: 90,
+    width: "90%",
+    height: 110,
   },
   vImage: {
     width: "90%",

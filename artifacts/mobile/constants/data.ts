@@ -10,6 +10,12 @@ export interface MenuItem {
   calories?: number;
   image?: ReturnType<typeof require>;
   imageUrl?: string | null;
+  images?: string[]; // Array of image URLs for carousel support
+  offerActive?: boolean;
+  offerPercentage?: number | null;
+  offerLabel?: string | null;
+  offerStartDate?: string | null;
+  offerEndDate?: string | null;
 }
 
 export interface Category {
@@ -32,6 +38,7 @@ export interface Branch {
 
 export interface Deal {
   id: string;
+  itemId: string;
   title: string;
   subtitle: string;
   price: number;
@@ -40,6 +47,8 @@ export interface Deal {
   gradientStart: string;
   gradientEnd: string;
   image?: ReturnType<typeof require>;
+  imageUrl?: string | null;
+  images?: string[]; // Array of image URLs for carousel support
 }
 
 export const CATEGORIES: Category[] = [
@@ -55,6 +64,7 @@ export const CATEGORIES: Category[] = [
 export const DEALS: Deal[] = [
   {
     id: "d1",
+    itemId: "deal1",
     title: "Family Feast",
     subtitle: "8 pcs crispy chicken + 4 fries + 4 drinks",
     price: 3499,
@@ -66,6 +76,7 @@ export const DEALS: Deal[] = [
   },
   {
     id: "d2",
+    itemId: "deal2",
     title: "Duo Deal",
     subtitle: "2 pcs chicken + 2 fries + 2 drinks",
     price: 1649,
@@ -77,6 +88,7 @@ export const DEALS: Deal[] = [
   },
   {
     id: "d3",
+    itemId: "deal3",
     title: "Student Meal",
     subtitle: "1 Zinger Burger + fries + drink",
     price: 899,
@@ -88,6 +100,7 @@ export const DEALS: Deal[] = [
   },
   {
     id: "d4",
+    itemId: "deal4",
     title: "RFC Box Meal",
     subtitle: "2 pcs chicken + coleslaw + fries + drink",
     price: 1299,
@@ -578,7 +591,7 @@ export const BRANCHES: Branch[] = [
 export const CATEGORY_COLORS: Record<string, [string, string]> = {
   deals: ["#0D3B1A", "#1B5E20"],
   chicken: ["#BF360C", "#E64A19"],
-  burgers: ["#880E4F", "#AD1457"],
+  burgers: ["#C62828", "#EF6C00"],
   wraps: ["#00695C", "#00897B"],
   sides: ["#E65100", "#F57C00"],
   drinks: ["#0D47A1", "#1565C0"],

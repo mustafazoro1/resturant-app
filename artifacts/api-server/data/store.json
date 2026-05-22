@@ -10,7 +10,12 @@
       "spicy": true,
       "popular": true,
       "calories": 520,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/30bc0ea4-9140-4ed7-9826-579335919227",
+      "offerPercentage": 12,
+      "offerLabel": "Value",
+      "offerActive": true,
+      "offerStartDate": null,
+      "offerEndDate": null
     },
     {
       "id": "m2",
@@ -22,7 +27,12 @@
       "spicy": false,
       "popular": true,
       "calories": 1100,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/f742b905-80b6-436f-b3ac-d1a52897f99b",
+      "offerPercentage": 18,
+      "offerLabel": "Hot Deal",
+      "offerActive": true,
+      "offerStartDate": null,
+      "offerEndDate": null
     },
     {
       "id": "m3",
@@ -34,7 +44,7 @@
       "spicy": false,
       "popular": true,
       "calories": 380,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/06c41f28-3ade-4621-83d3-0c84ce891eeb"
     },
     {
       "id": "m4",
@@ -46,7 +56,7 @@
       "spicy": true,
       "popular": false,
       "calories": 460,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/932e71db-1d00-41de-9812-7dabbe92cbdc"
     },
     {
       "id": "m5",
@@ -58,7 +68,7 @@
       "spicy": false,
       "popular": false,
       "calories": 340,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/034648b5-fe5d-448e-8bca-c5bbbdf3d0e8"
     },
     {
       "id": "m6",
@@ -70,7 +80,7 @@
       "spicy": true,
       "popular": false,
       "calories": 360,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/8c04f0a2-5a80-414a-905e-1633de4837e2"
     },
     {
       "id": "m7",
@@ -82,7 +92,7 @@
       "spicy": false,
       "popular": true,
       "calories": 420,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/28074a0b-d9a6-4f50-ba3c-f5ef58009d33"
     },
     {
       "id": "m8",
@@ -94,7 +104,7 @@
       "spicy": false,
       "popular": false,
       "calories": 130,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/dabce327-17d0-4b1c-8d77-f5a040f732d5"
     },
     {
       "id": "m9",
@@ -106,7 +116,7 @@
       "spicy": false,
       "popular": false,
       "calories": 210,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/f3411d4a-f99f-46be-ac8d-5656a5cc7191"
     },
     {
       "id": "m10",
@@ -114,11 +124,11 @@
       "description": "Warm chocolate cake with a gooey molten center",
       "price": 280,
       "category": "Desserts",
-      "available": false,
+      "available": true,
       "spicy": false,
-      "popular": false,
+      "popular": true,
       "calories": 380,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/dcd7a1a6-4893-488a-b87b-de07af7048d5"
     },
     {
       "id": "m11",
@@ -130,7 +140,12 @@
       "spicy": false,
       "popular": true,
       "calories": null,
-      "imageUrl": null
+      "imageUrl": "/api/storage/objects/uploads/53a5a002-744e-434f-9ca8-029243d5be28",
+      "offerPercentage": 17,
+      "offerLabel": "Best Seller",
+      "offerActive": true,
+      "offerStartDate": null,
+      "offerEndDate": null
     },
     {
       "id": "m12",
@@ -142,19 +157,7 @@
       "spicy": false,
       "popular": false,
       "calories": 580,
-      "imageUrl": null
-    },
-    {
-      "id": "m1779365722554",
-      "name": "Beef Burger",
-      "description": "joicy beefy burger with more then 10 diffrent flavers",
-      "price": 899,
-      "category": "Burgers",
-      "available": true,
-      "spicy": false,
-      "popular": true,
-      "calories": 550,
-      "imageUrl": "/api/storage/objects/uploads/ed508af0-ed7c-486f-b9cc-bd77eac01b58"
+      "imageUrl": "/api/storage/objects/uploads/3f642829-81f3-42f3-aafd-9eebf799ae32"
     }
   ],
   "orders": [

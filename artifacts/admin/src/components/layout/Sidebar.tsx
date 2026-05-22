@@ -1,5 +1,15 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Menu as MenuIcon, ReceiptText, BarChart3, LogOut, Tag } from "lucide-react";
+import {
+  LayoutDashboard,
+  Menu as MenuIcon,
+  ReceiptText,
+  BarChart3,
+  LogOut,
+  Tag,
+  Truck,
+  Settings2,
+  Monitor,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -8,6 +18,9 @@ const navItems = [
   { href: "/orders", label: "Live Orders", icon: ReceiptText },
   { href: "/menu", label: "Menu Management", icon: MenuIcon },
   { href: "/categories", label: "Categories", icon: Tag },
+  { href: "/delivery", label: "Delivery & Branches", icon: Truck },
+  { href: "/banners", label: "Banner Management", icon: Monitor },
+  { href: "/settings", label: "Settings", icon: Settings2 },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
@@ -22,8 +35,12 @@ export function Sidebar() {
             RFC
           </div>
           <div>
-            <h2 className="font-bold tracking-tight text-lg leading-tight">Admin</h2>
-            <p className="text-xs text-sidebar-foreground/60 font-medium">Operations Center</p>
+            <h2 className="font-bold tracking-tight text-lg leading-tight">
+              Admin
+            </h2>
+            <p className="text-xs text-sidebar-foreground/60 font-medium">
+              Operations Center
+            </p>
           </div>
         </div>
       </div>
@@ -41,7 +58,7 @@ export function Sidebar() {
                   "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
                   isActive
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
                 )}
                 data-testid={`nav-${item.label.toLowerCase().replace(" ", "-")}`}
               >
@@ -54,7 +71,10 @@ export function Sidebar() {
       </div>
 
       <div className="p-4 mt-auto border-t border-sidebar-border">
-        <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground gap-3">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground gap-3"
+        >
           <LogOut className="h-4 w-4" />
           Logout
         </Button>

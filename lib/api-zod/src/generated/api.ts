@@ -47,6 +47,11 @@ export const GetStorageObjectParams = zod.object({
 /**
  * @summary Get all available menu items for the mobile app
  */
+export const getMobileMenuResponseOfferPercentageMin = 0;
+export const getMobileMenuResponseOfferPercentageMax = 100;
+
+
+
 export const GetMobileMenuResponseItem = zod.object({
   "id": zod.string(),
   "name": zod.string(),
@@ -57,7 +62,12 @@ export const GetMobileMenuResponseItem = zod.object({
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
   "calories": zod.number().nullish(),
-  "imageUrl": zod.string().nullish()
+  "imageUrl": zod.string().nullish(),
+  "offerPercentage": zod.number().min(getMobileMenuResponseOfferPercentageMin).max(getMobileMenuResponseOfferPercentageMax).nullish(),
+  "offerLabel": zod.string().nullish(),
+  "offerActive": zod.boolean().optional(),
+  "offerStartDate": zod.string().nullish(),
+  "offerEndDate": zod.string().nullish()
 })
 export const GetMobileMenuResponse = zod.array(GetMobileMenuResponseItem)
 
@@ -86,6 +96,11 @@ export const GetAdminAnalyticsResponse = zod.object({
 /**
  * @summary List all menu items
  */
+export const listAdminMenuItemsResponseOfferPercentageMin = 0;
+export const listAdminMenuItemsResponseOfferPercentageMax = 100;
+
+
+
 export const ListAdminMenuItemsResponseItem = zod.object({
   "id": zod.string(),
   "name": zod.string(),
@@ -96,7 +111,12 @@ export const ListAdminMenuItemsResponseItem = zod.object({
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
   "calories": zod.number().nullish(),
-  "imageUrl": zod.string().nullish()
+  "imageUrl": zod.string().nullish(),
+  "offerPercentage": zod.number().min(listAdminMenuItemsResponseOfferPercentageMin).max(listAdminMenuItemsResponseOfferPercentageMax).nullish(),
+  "offerLabel": zod.string().nullish(),
+  "offerActive": zod.boolean().optional(),
+  "offerStartDate": zod.string().nullish(),
+  "offerEndDate": zod.string().nullish()
 })
 export const ListAdminMenuItemsResponse = zod.array(ListAdminMenuItemsResponseItem)
 
@@ -106,6 +126,9 @@ export const ListAdminMenuItemsResponse = zod.array(ListAdminMenuItemsResponseIt
  */
 
 export const createAdminMenuItemBodyPriceMin = 0;
+
+export const createAdminMenuItemBodyOfferPercentageMin = 0;
+export const createAdminMenuItemBodyOfferPercentageMax = 100;
 
 
 
@@ -117,7 +140,12 @@ export const CreateAdminMenuItemBody = zod.object({
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
   "calories": zod.number().nullish(),
-  "imageUrl": zod.string().nullish()
+  "imageUrl": zod.string().nullish(),
+  "offerPercentage": zod.number().min(createAdminMenuItemBodyOfferPercentageMin).max(createAdminMenuItemBodyOfferPercentageMax).nullish(),
+  "offerLabel": zod.string().nullish(),
+  "offerActive": zod.boolean().optional(),
+  "offerStartDate": zod.string().nullish(),
+  "offerEndDate": zod.string().nullish()
 })
 
 
@@ -128,6 +156,11 @@ export const UpdateAdminMenuItemParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const updateAdminMenuItemBodyOfferPercentageMin = 0;
+export const updateAdminMenuItemBodyOfferPercentageMax = 100;
+
+
+
 export const UpdateAdminMenuItemBody = zod.object({
   "name": zod.string().optional(),
   "description": zod.string().optional(),
@@ -137,8 +170,18 @@ export const UpdateAdminMenuItemBody = zod.object({
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
   "calories": zod.number().nullish(),
-  "imageUrl": zod.string().nullish()
+  "imageUrl": zod.string().nullish(),
+  "offerPercentage": zod.number().min(updateAdminMenuItemBodyOfferPercentageMin).max(updateAdminMenuItemBodyOfferPercentageMax).nullish(),
+  "offerLabel": zod.string().nullish(),
+  "offerActive": zod.boolean().optional(),
+  "offerStartDate": zod.string().nullish(),
+  "offerEndDate": zod.string().nullish()
 })
+
+export const updateAdminMenuItemResponseOfferPercentageMin = 0;
+export const updateAdminMenuItemResponseOfferPercentageMax = 100;
+
+
 
 export const UpdateAdminMenuItemResponse = zod.object({
   "id": zod.string(),
@@ -150,7 +193,12 @@ export const UpdateAdminMenuItemResponse = zod.object({
   "spicy": zod.boolean().optional(),
   "popular": zod.boolean().optional(),
   "calories": zod.number().nullish(),
-  "imageUrl": zod.string().nullish()
+  "imageUrl": zod.string().nullish(),
+  "offerPercentage": zod.number().min(updateAdminMenuItemResponseOfferPercentageMin).max(updateAdminMenuItemResponseOfferPercentageMax).nullish(),
+  "offerLabel": zod.string().nullish(),
+  "offerActive": zod.boolean().optional(),
+  "offerStartDate": zod.string().nullish(),
+  "offerEndDate": zod.string().nullish()
 })
 
 

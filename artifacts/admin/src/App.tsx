@@ -9,6 +9,9 @@ import Menu from "@/pages/menu";
 import Orders from "@/pages/orders";
 import Analytics from "@/pages/analytics";
 import Categories from "@/pages/categories";
+import Delivery from "@/pages/delivery";
+import Settings from "@/pages/settings";
+import Banners from "@/pages/banners";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +23,9 @@ function Router() {
       <Route path="/orders" component={Orders} />
       <Route path="/analytics" component={Analytics} />
       <Route path="/categories" component={Categories} />
+      <Route path="/delivery" component={Delivery} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/banners" component={Banners} />
       <Route path="/">
         <Redirect to="/menu" />
       </Route>

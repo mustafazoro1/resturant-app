@@ -18,13 +18,21 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { LOYALTY_TIERS, MAX_LOYALTY_POINTS, SavedAddress, useAuth } from "@/contexts/AuthContext";
+import {
+  LOYALTY_TIERS,
+  MAX_LOYALTY_POINTS,
+  SavedAddress,
+  useAuth,
+} from "@/contexts/AuthContext";
 import { useBranch } from "@/contexts/BranchContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useOrders } from "@/contexts/OrderContext";
 import { useColors } from "@/hooks/useColors";
 
-const LABEL_ICONS: Record<SavedAddress["label"], React.ComponentProps<typeof Feather>["name"]> = {
+const LABEL_ICONS: Record<
+  SavedAddress["label"],
+  React.ComponentProps<typeof Feather>["name"]
+> = {
   Home: "home",
   Work: "briefcase",
   Other: "map-pin",
@@ -36,7 +44,14 @@ export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { user, signOut, removeAddress, setDefaultAddress, uploadProfilePic, availableTier } = useAuth();
+  const {
+    user,
+    signOut,
+    removeAddress,
+    setDefaultAddress,
+    uploadProfilePic,
+    availableTier,
+  } = useAuth();
   const { selectedBranch } = useBranch();
   const { orders } = useOrders();
   const { language, setLanguage, t } = useLanguage();
@@ -47,8 +62,17 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
-      Animated.spring(slideAnim, { toValue: 0, damping: 18, stiffness: 120, useNativeDriver: true }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        damping: 18,
+        stiffness: 120,
+        useNativeDriver: true,
+      }),
     ]).start();
   }, []);
 
@@ -58,10 +82,16 @@ export default function ProfileScreen() {
   const pointsPct = Math.min((points / MAX_LOYALTY_POINTS) * 100, 100);
 
   const handleSignOut = () => {
-    Alert.alert(t("signOut"), language === "ur" ? "کیا آپ واقعی سائن آؤٹ کرنا چاہتے ہیں؟" : "Are you sure you want to sign out?", [
-      { text: language === "ur" ? "رد کریں" : "Cancel", style: "cancel" },
-      { text: t("signOut"), style: "destructive", onPress: () => signOut() },
-    ]);
+    Alert.alert(
+      t("signOut"),
+      language === "ur"
+        ? "کیا آپ واقعی سائن آؤٹ کرنا چاہتے ہیں؟"
+        : "Are you sure you want to sign out?",
+      [
+        { text: language === "ur" ? "رد کریں" : "Cancel", style: "cancel" },
+        { text: t("signOut"), style: "destructive", onPress: () => signOut() },
+      ],
+    );
   };
 
   const handleContact = () => {
@@ -74,7 +104,7 @@ export default function ProfileScreen() {
           text: language === "ur" ? "کال کریں" : "Call Now",
           onPress: () => Linking.openURL(`tel:${RFC_PHONE}`),
         },
-      ]
+      ],
     );
   };
 
@@ -83,7 +113,9 @@ export default function ProfileScreen() {
     if (!permission.granted) {
       Alert.alert(
         language === "ur" ? "اجازت درکار ہے" : "Permission Required",
-        language === "ur" ? "براہ کرم اپنی تصاویر تک رسائی کی اجازت دیں۔" : "Please allow access to your photos.",
+        language === "ur"
+          ? "براہ کرم اپنی تصاویر تک رسائی کی اجازت دیں۔"
+          : "Please allow access to your photos.",
       );
       return;
     }
@@ -103,11 +135,17 @@ export default function ProfileScreen() {
   const handleRemoveAddress = (id: string) => {
     Alert.alert(
       language === "ur" ? "پتہ ہٹائیں" : "Remove Address",
-      language === "ur" ? "کیا اس پتے کو ہٹانا ہے؟" : "Remove this saved address?",
+      language === "ur"
+        ? "کیا اس پتے کو ہٹانا ہے؟"
+        : "Remove this saved address?",
       [
         { text: language === "ur" ? "رد کریں" : "Cancel", style: "cancel" },
-        { text: language === "ur" ? "ہٹائیں" : "Remove", style: "destructive", onPress: () => removeAddress(id) },
-      ]
+        {
+          text: language === "ur" ? "ہٹائیں" : "Remove",
+          style: "destructive",
+          onPress: () => removeAddress(id),
+        },
+      ],
     );
   };
 
@@ -119,7 +157,7 @@ export default function ProfileScreen() {
         { text: "English", onPress: () => setLanguage("en") },
         { text: "اردو", onPress: () => setLanguage("ur") },
         { text: language === "ur" ? "رد کریں" : "Cancel", style: "cancel" },
-      ]
+      ],
     );
   };
 
@@ -130,31 +168,60 @@ export default function ProfileScreen() {
       showsVerticalScrollIndicator={false}
     >
       {/* Header */}
-      <LinearGradient colors={[colors.darkGreen, colors.primary]} style={styles.header}>
-        <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }], alignItems: "center" }}>
-          <TouchableOpacity onPress={user ? handlePickProfilePic : undefined} style={styles.avatarCircle} activeOpacity={0.8}>
+      <LinearGradient
+        colors={["#0A1F0E", colors.darkGreen, "#1A4A24"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerGlow} />
+        <View style={styles.headerGlow2} />
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+            alignItems: "center",
+          }}
+        >
+          <TouchableOpacity
+            onPress={user ? handlePickProfilePic : undefined}
+            style={styles.avatarCircle}
+            activeOpacity={0.8}
+          >
             {user ? (
               user.profilePicUrl ? (
-                <Image source={{ uri: user.profilePicUrl }} style={styles.avatarImage} />
+                <Image
+                  source={{ uri: user.profilePicUrl }}
+                  style={styles.avatarImage}
+                />
               ) : (
                 <Text style={[styles.avatarInitial, { color: colors.primary }]}>
-                {user.name.charAt(0).toUpperCase()}
-              </Text>
+                  {user.name.charAt(0).toUpperCase()}
+                </Text>
               )
             ) : (
               <Feather name="user" size={34} color={colors.primary} />
+            )}
+            {user && (
+              <View style={styles.cameraOverlay}>
+                <Feather name="camera" size={12} color="#FFFFFF" />
+              </View>
             )}
           </TouchableOpacity>
           {user ? (
             <View style={styles.userInfo}>
               <Text style={styles.userName}>{user.name}</Text>
               <Text style={styles.userPhone}>{user.phone}</Text>
-              <TouchableOpacity style={styles.uploadBtn} onPress={handlePickProfilePic} activeOpacity={0.8}>
-                <Feather name="camera" size={14} color="#FFF" />
-                <Text style={styles.uploadBtnText}>{language === "ur" ? "پروفائل تصویر اپ لوڈ کریں" : "Upload Profile Photo"}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleSignOut} style={styles.signOutChip}>
-                <Feather name="log-out" size={12} color="rgba(255,255,255,0.8)" />
+
+              <TouchableOpacity
+                onPress={handleSignOut}
+                style={styles.signOutChip}
+              >
+                <Feather
+                  name="log-out"
+                  size={12}
+                  color="rgba(255,255,255,0.8)"
+                />
                 <Text style={styles.signOutText}>{t("signOut")}</Text>
               </TouchableOpacity>
             </View>
@@ -162,9 +229,14 @@ export default function ProfileScreen() {
             <View style={styles.guestInfo}>
               <Text style={styles.guestName}>{t("guest")}</Text>
               <Text style={styles.guestSubtitle}>
-                {language === "ur" ? "آرڈر کرنے کے لیے سائن ان کریں" : "Sign in to save your orders"}
+                {language === "ur"
+                  ? "آرڈر کرنے کے لیے سائن ان کریں"
+                  : "Sign in to save your orders"}
               </Text>
-              <TouchableOpacity style={styles.signInBtn} onPress={() => router.push("/login")}>
+              <TouchableOpacity
+                style={styles.signInBtn}
+                onPress={() => router.push("/login")}
+              >
                 <Feather name="log-in" size={14} color="#C8102E" />
                 <Text style={styles.signInText}>{t("signIn")}</Text>
               </TouchableOpacity>
@@ -174,18 +246,36 @@ export default function ProfileScreen() {
       </LinearGradient>
 
       {/* Stats */}
-      <View style={[styles.statsRow, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
+      <View
+        style={[
+          styles.statsRow,
+          { backgroundColor: colors.card, borderBottomColor: colors.border },
+        ]}
+      >
         {[
           { value: String(orders.length), label: t("orders") },
-          { value: totalSpend > 0 ? `${Math.round(totalSpend / 1000)}k` : "0", label: language === "ur" ? "خرچ (Rs.)" : "Spent (Rs.)" },
+          {
+            value: totalSpend > 0 ? `${Math.round(totalSpend / 1000)}k` : "0",
+            label: language === "ur" ? "خرچ (Rs.)" : "Spent (Rs.)",
+          },
           { value: String(points), label: t("loyaltyPoints") },
         ].map((stat, idx, arr) => (
           <React.Fragment key={stat.label}>
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: colors.primary }]}>{stat.value}</Text>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
+              <Text style={[styles.statValue, { color: colors.primary }]}>
+                {stat.value}
+              </Text>
+              <Text
+                style={[styles.statLabel, { color: colors.mutedForeground }]}
+              >
+                {stat.label}
+              </Text>
             </View>
-            {idx < arr.length - 1 && <View style={[styles.statDivider, { backgroundColor: colors.border }]} />}
+            {idx < arr.length - 1 && (
+              <View
+                style={[styles.statDivider, { backgroundColor: colors.border }]}
+              />
+            )}
           </React.Fragment>
         ))}
       </View>
@@ -193,11 +283,18 @@ export default function ProfileScreen() {
       {/* Loyalty Points Card */}
       {user && (
         <Animated.View style={[styles.section, { opacity: fadeAnim }]}>
-          <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
+          <Text
+            style={[styles.sectionTitle, { color: colors.mutedForeground }]}
+          >
             {language === "ur" ? "لائلٹی پروگرام" : "LOYALTY PROGRAMME"}
           </Text>
-          <View style={[styles.loyaltyCard, { borderColor: colors.primary + "40" }]}>
-            <LinearGradient colors={[colors.darkGreen, colors.primary]} style={styles.loyaltyGradient}>
+          <View
+            style={[styles.loyaltyCard, { borderColor: colors.primary + "40" }]}
+          >
+            <LinearGradient
+              colors={[colors.darkGreen, colors.primary]}
+              style={styles.loyaltyGradient}
+            >
               <View style={styles.loyaltyTop}>
                 <View>
                   <Text style={styles.loyaltyTitle}>{t("yourPoints")}</Text>
@@ -227,13 +324,46 @@ export default function ProfileScreen() {
                   const unlocked = points >= tier.points;
                   return (
                     <View key={tier.points} style={styles.tierItem}>
-                      <View style={[styles.tierDot, { backgroundColor: unlocked ? "#FFD700" : "rgba(255,255,255,0.3)" }]}>
-                        {unlocked && <Feather name="check" size={9} color={colors.primary} />}
+                      <View
+                        style={[
+                          styles.tierDot,
+                          {
+                            backgroundColor: unlocked
+                              ? "#FFD700"
+                              : "rgba(255,255,255,0.3)",
+                          },
+                        ]}
+                      >
+                        {unlocked && (
+                          <Feather
+                            name="check"
+                            size={9}
+                            color={colors.primary}
+                          />
+                        )}
                       </View>
-                      <Text style={[styles.tierLabel, { color: unlocked ? "#FFD700" : "rgba(255,255,255,0.55)" }]}>
+                      <Text
+                        style={[
+                          styles.tierLabel,
+                          {
+                            color: unlocked
+                              ? "#FFD700"
+                              : "rgba(255,255,255,0.55)",
+                          },
+                        ]}
+                      >
                         {tier.points}pts
                       </Text>
-                      <Text style={[styles.tierDiscount, { color: unlocked ? "#FFFFFF" : "rgba(255,255,255,0.4)" }]}>
+                      <Text
+                        style={[
+                          styles.tierDiscount,
+                          {
+                            color: unlocked
+                              ? "#FFFFFF"
+                              : "rgba(255,255,255,0.4)",
+                          },
+                        ]}
+                      >
                         {tier.label}
                       </Text>
                     </View>
@@ -262,7 +392,9 @@ export default function ProfileScreen() {
             {/* Earn info */}
             <View style={[styles.earnInfo, { backgroundColor: colors.card }]}>
               <Feather name="info" size={13} color={colors.mutedForeground} />
-              <Text style={[styles.earnInfoText, { color: colors.mutedForeground }]}>
+              <Text
+                style={[styles.earnInfoText, { color: colors.mutedForeground }]}
+              >
                 {language === "ur"
                   ? "ہر Rs. 100 خرچ کرنے پر 1 پوائنٹ ملتا ہے"
                   : "Earn 1 point per Rs. 100 spent • Max 100 points • Redeem at checkout"}
@@ -275,7 +407,9 @@ export default function ProfileScreen() {
       {/* Delivery Addresses */}
       <View style={styles.section}>
         <View style={styles.sectionHeaderRow}>
-          <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>
+          <Text
+            style={[styles.sectionTitle, { color: colors.mutedForeground }]}
+          >
             {language === "ur" ? "ڈیلیوری پتے" : "DELIVERY ADDRESSES"}
           </Text>
           {user && (
@@ -294,22 +428,44 @@ export default function ProfileScreen() {
         {!user ? (
           <TouchableOpacity
             onPress={() => router.push("/login")}
-            style={[styles.emptyCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[
+              styles.emptyCard,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
           >
             <Feather name="lock" size={18} color={colors.mutedForeground} />
-            <Text style={[styles.emptyCardText, { color: colors.mutedForeground }]}>
-              {language === "ur" ? "پتے محفوظ کرنے کے لیے سائن ان کریں" : "Sign in to save delivery addresses"}
+            <Text
+              style={[styles.emptyCardText, { color: colors.mutedForeground }]}
+            >
+              {language === "ur"
+                ? "پتے محفوظ کرنے کے لیے سائن ان کریں"
+                : "Sign in to save delivery addresses"}
             </Text>
-            <Feather name="chevron-right" size={15} color={colors.mutedForeground} />
+            <Feather
+              name="chevron-right"
+              size={15}
+              color={colors.mutedForeground}
+            />
           </TouchableOpacity>
         ) : user.addresses.length === 0 ? (
           <TouchableOpacity
             onPress={() => router.push("/add-address")}
-            style={[styles.emptyCard, { backgroundColor: colors.card, borderColor: colors.border, borderStyle: "dashed" }]}
+            style={[
+              styles.emptyCard,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                borderStyle: "dashed",
+              },
+            ]}
           >
             <Feather name="plus-circle" size={18} color={colors.primary} />
-            <Text style={[styles.emptyCardText, { color: colors.mutedForeground }]}>
-              {language === "ur" ? "ڈیلیوری کے لیے پتہ شامل کریں" : "Add an address for quick delivery"}
+            <Text
+              style={[styles.emptyCardText, { color: colors.mutedForeground }]}
+            >
+              {language === "ur"
+                ? "ڈیلیوری کے لیے پتہ شامل کریں"
+                : "Add an address for quick delivery"}
             </Text>
           </TouchableOpacity>
         ) : (
@@ -320,40 +476,89 @@ export default function ProfileScreen() {
                 style={[
                   styles.addrCard,
                   {
-                    backgroundColor: addr.isDefault ? colors.lightGreen : colors.card,
+                    backgroundColor: addr.isDefault
+                      ? colors.lightGreen
+                      : colors.card,
                     borderBottomColor: colors.border,
                     borderBottomWidth: idx < user.addresses.length - 1 ? 1 : 0,
                   },
                 ]}
               >
-                <View style={[styles.addrIcon, { backgroundColor: addr.isDefault ? colors.primary : colors.muted }]}>
-                  <Feather name={LABEL_ICONS[addr.label]} size={15} color={addr.isDefault ? "#FFF" : colors.mutedForeground} />
+                <View
+                  style={[
+                    styles.addrIcon,
+                    {
+                      backgroundColor: addr.isDefault
+                        ? colors.primary
+                        : colors.muted,
+                    },
+                  ]}
+                >
+                  <Feather
+                    name={LABEL_ICONS[addr.label]}
+                    size={15}
+                    color={addr.isDefault ? "#FFF" : colors.mutedForeground}
+                  />
                 </View>
                 <View style={styles.addrContent}>
                   <View style={styles.addrTopRow}>
-                    <Text style={[styles.addrLabel, { color: colors.foreground }]}>{addr.label}</Text>
+                    <Text
+                      style={[styles.addrLabel, { color: colors.foreground }]}
+                    >
+                      {addr.label}
+                    </Text>
                     {addr.isDefault && (
-                      <View style={[styles.defaultBadge, { backgroundColor: colors.primary }]}>
+                      <View
+                        style={[
+                          styles.defaultBadge,
+                          { backgroundColor: colors.primary },
+                        ]}
+                      >
                         <Text style={styles.defaultBadgeText}>
                           {language === "ur" ? "ڈیفالٹ" : "Default"}
                         </Text>
                       </View>
                     )}
                   </View>
-                  <Text style={[styles.addrText, { color: colors.mutedForeground }]} numberOfLines={2}>
+                  <Text
+                    style={[styles.addrText, { color: colors.mutedForeground }]}
+                    numberOfLines={2}
+                  >
                     {addr.address}
                   </Text>
                 </View>
                 <View style={styles.addrActions}>
                   {!addr.isDefault && (
-                    <TouchableOpacity onPress={() => setDefaultAddress(addr.id)} style={[styles.addrBtn, { borderColor: colors.border }]}>
-                      <Feather name="star" size={12} color={colors.mutedForeground} />
+                    <TouchableOpacity
+                      onPress={() => setDefaultAddress(addr.id)}
+                      style={[styles.addrBtn, { borderColor: colors.border }]}
+                    >
+                      <Feather
+                        name="star"
+                        size={12}
+                        color={colors.mutedForeground}
+                      />
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity onPress={() => router.push({ pathname: "/add-address", params: { editId: addr.id } })} style={[styles.addrBtn, { borderColor: colors.border }]}>
-                    <Feather name="edit-2" size={12} color={colors.mutedForeground} />
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push({
+                        pathname: "/add-address",
+                        params: { editId: addr.id },
+                      })
+                    }
+                    style={[styles.addrBtn, { borderColor: colors.border }]}
+                  >
+                    <Feather
+                      name="edit-2"
+                      size={12}
+                      color={colors.mutedForeground}
+                    />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleRemoveAddress(addr.id)} style={[styles.addrBtn, { borderColor: "#FECACA" }]}>
+                  <TouchableOpacity
+                    onPress={() => handleRemoveAddress(addr.id)}
+                    style={[styles.addrBtn, { borderColor: "#FECACA" }]}
+                  >
                     <Feather name="trash-2" size={12} color="#DC2626" />
                   </TouchableOpacity>
                 </View>
@@ -369,13 +574,32 @@ export default function ProfileScreen() {
           {language === "ur" ? "ترتیبات" : "SETTINGS"}
         </Text>
         <View style={[styles.menuCard, { borderColor: colors.border }]}>
-          <SettingRow icon="bell" label={t("notifications")} colors={colors}
+          <SettingRow
+            icon="bell"
+            label={t("notifications")}
+            colors={colors}
             rightElement={
-              <Switch value={notifications} onValueChange={setNotifications}
-                trackColor={{ false: colors.border, true: colors.primary }} thumbColor="#FFF" />
+              <Switch
+                value={notifications}
+                onValueChange={setNotifications}
+                trackColor={{ false: colors.border, true: colors.primary }}
+                thumbColor="#FFF"
+              />
             }
           />
-          <SettingRow icon="map-pin" label={t("currentBranch")} value={selectedBranch ? `RFC ${selectedBranch.name}` : language === "ur" ? "منتخب نہیں" : "Not selected"} colors={colors} onPress={() => router.push("/branch-select")} />
+          <SettingRow
+            icon="map-pin"
+            label={t("currentBranch")}
+            value={
+              selectedBranch
+                ? `RFC ${selectedBranch.name}`
+                : language === "ur"
+                  ? "منتخب نہیں"
+                  : "Not selected"
+            }
+            colors={colors}
+            onPress={() => router.push("/branch-select")}
+          />
           <SettingRow
             icon="globe"
             label={t("language")}
@@ -393,21 +617,46 @@ export default function ProfileScreen() {
           {t("about")}
         </Text>
         <View style={[styles.menuCard, { borderColor: colors.border }]}>
-          <SettingRow icon="phone" label={t("contactUs")} value={RFC_PHONE} colors={colors} onPress={handleContact} />
-          <SettingRow icon="file-text" label={t("terms")} colors={colors} onPress={() => router.push("/terms")} />
-          <SettingRow icon="shield" label={t("privacy")} colors={colors} onPress={() => router.push("/privacy")} />
-          <SettingRow icon="info" label={t("appVersion")} value="v1.0.0" colors={colors} />
+          <SettingRow
+            icon="phone"
+            label={t("contactUs")}
+            value={RFC_PHONE}
+            colors={colors}
+            onPress={handleContact}
+          />
+          <SettingRow
+            icon="file-text"
+            label={t("terms")}
+            colors={colors}
+            onPress={() => router.push("/terms")}
+          />
+          <SettingRow
+            icon="shield"
+            label={t("privacy")}
+            colors={colors}
+            onPress={() => router.push("/privacy")}
+          />
+          <SettingRow
+            icon="info"
+            label={t("appVersion")}
+            value="v1.0.0"
+            colors={colors}
+          />
         </View>
       </View>
 
       {/* Brand footer */}
       <Animated.View style={[styles.brandFooter, { opacity: fadeAnim }]}>
-        <LinearGradient colors={[colors.darkGreen, colors.primary]} style={styles.brandCircle}>
+        <View style={[styles.brandCircleRed, { backgroundColor: "#C8102E" }]}>
           <Text style={styles.brandText}>RFC</Text>
-        </LinearGradient>
-        <Text style={[styles.brandName, { color: colors.foreground }]}>Real Farmers Chicken</Text>
+        </View>
+        <Text style={[styles.brandName, { color: colors.foreground }]}>
+          Real Farmers Chicken
+        </Text>
         <Text style={[styles.brandTagline, { color: colors.mutedForeground }]}>
-          {language === "ur" ? "تازہ۔ کرارا۔ لذیذ۔" : "Fresh. Crispy. Delicious."}
+          {language === "ur"
+            ? "تازہ۔ کرارا۔ لذیذ۔"
+            : "Fresh. Crispy. Delicious."}
         </Text>
       </Animated.View>
     </ScrollView>
@@ -415,7 +664,13 @@ export default function ProfileScreen() {
 }
 
 function SettingRow({
-  icon, label, value, onPress, rightElement, rightBadge, colors,
+  icon,
+  label,
+  value,
+  onPress,
+  rightElement,
+  rightBadge,
+  colors,
 }: {
   icon: React.ComponentProps<typeof Feather>["name"];
   label: string;
@@ -431,21 +686,41 @@ function SettingRow({
       activeOpacity={onPress ? 0.65 : 1}
       style={[styles.settingRow, { borderBottomColor: colors.border }]}
     >
-      <View style={[styles.settingIcon, { backgroundColor: colors.lightGreen }]}>
+      <View
+        style={[styles.settingIcon, { backgroundColor: colors.lightGreen }]}
+      >
         <Feather name={icon} size={15} color={colors.primary} />
       </View>
       <View style={styles.settingInfo}>
-        <Text style={[styles.settingLabel, { color: colors.foreground }]}>{label}</Text>
-        {value ? <Text style={[styles.settingValue, { color: colors.mutedForeground }]}>{value}</Text> : null}
+        <Text style={[styles.settingLabel, { color: colors.foreground }]}>
+          {label}
+        </Text>
+        {value ? (
+          <Text
+            style={[styles.settingValue, { color: colors.mutedForeground }]}
+          >
+            {value}
+          </Text>
+        ) : null}
       </View>
       {rightElement ?? (
         <View style={styles.settingRight}>
           {rightBadge && (
-            <View style={[styles.langBadge, { backgroundColor: colors.lightGreen }]}>
-              <Text style={[styles.langBadgeText, { color: colors.primary }]}>{rightBadge}</Text>
+            <View
+              style={[styles.langBadge, { backgroundColor: colors.lightGreen }]}
+            >
+              <Text style={[styles.langBadgeText, { color: colors.primary }]}>
+                {rightBadge}
+              </Text>
             </View>
           )}
-          {onPress && <Feather name="chevron-right" size={15} color={colors.mutedForeground} />}
+          {onPress && (
+            <Feather
+              name="chevron-right"
+              size={15}
+              color={colors.mutedForeground}
+            />
+          )}
         </View>
       )}
     </TouchableOpacity>
@@ -454,18 +729,67 @@ function SettingRow({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { padding: 24, paddingTop: 28, paddingBottom: 32, alignItems: "center" },
+  header: {
+    position: "relative",
+    overflow: "hidden",
+    padding: 24,
+    paddingTop: 28,
+    paddingBottom: 32,
+    alignItems: "center",
+  },
+  headerGlow2: {
+    position: "absolute",
+    width: 150,
+    height: 100,
+    borderRadius: 100,
+    backgroundColor: "rgba(200,16,46,0.08)",
+    bottom: -20,
+    right: -20,
+    zIndex: 0,
+  },
+  headerGlow: {
+    position: "absolute",
+    width: 220,
+    height: 160,
+    borderRadius: 140,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    top: -30,
+    left: -40,
+    transform: [{ rotate: "-8deg" }],
+    zIndex: 0,
+  },
   avatarCircle: {
-    width: 80, height: 80, borderRadius: 40, backgroundColor: "#FFFFFF",
-    justifyContent: "center", alignItems: "center", marginBottom: 14,
-    shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 6,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.25)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+    zIndex: 1,
   },
-  avatarImage: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
+  avatarImage: { width: 94, height: 94, borderRadius: 47 },
+  avatarInitial: { fontSize: 38, fontFamily: "Inter_700Bold" },
+  cameraOverlay: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#C8102E",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
   },
-  avatarInitial: { fontSize: 32, fontFamily: "Inter_700Bold" },
   userInfo: { alignItems: "center" },
   uploadBtn: {
     flexDirection: "row",
@@ -482,76 +806,258 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Inter_600SemiBold",
   },
-  userName: { color: "#FFFFFF", fontSize: 20, fontFamily: "Inter_700Bold", marginBottom: 3 },
-  userPhone: { color: "rgba(255,255,255,0.75)", fontSize: 13, fontFamily: "Inter_400Regular", marginBottom: 12 },
-  signOutChip: {
-    flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 14, paddingVertical: 6,
-    borderRadius: 20, backgroundColor: "rgba(255,255,255,0.15)", borderWidth: 1, borderColor: "rgba(255,255,255,0.25)",
+  userName: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
+    marginBottom: 3,
   },
-  signOutText: { color: "rgba(255,255,255,0.85)", fontSize: 12, fontFamily: "Inter_500Medium" },
+  userPhone: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    marginBottom: 12,
+  },
+  signOutChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.25)",
+  },
+  signOutText: {
+    color: "rgba(255,255,255,0.85)",
+    fontSize: 12,
+    fontFamily: "Inter_500Medium",
+  },
   guestInfo: { alignItems: "center" },
-  guestName: { color: "#FFFFFF", fontSize: 20, fontFamily: "Inter_700Bold", marginBottom: 4 },
-  guestSubtitle: { color: "rgba(255,255,255,0.75)", fontSize: 13, fontFamily: "Inter_400Regular", marginBottom: 14 },
+  guestName: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
+    marginBottom: 4,
+  },
+  guestSubtitle: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    marginBottom: 14,
+  },
   signInBtn: {
-    flexDirection: "row", alignItems: "center", gap: 7, backgroundColor: "#FFFFFF",
-    borderRadius: 12, paddingHorizontal: 20, paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   signInText: { color: "#C8102E", fontSize: 14, fontFamily: "Inter_700Bold" },
-  statsRow: { flexDirection: "row", alignItems: "center", paddingVertical: 16, borderBottomWidth: 1 },
+  statsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
   statItem: { flex: 1, alignItems: "center" },
-  statValue: { fontSize: 20, fontFamily: "Inter_700Bold", marginBottom: 2 },
-  statLabel: { fontSize: 10, fontFamily: "Inter_500Medium", textAlign: "center" },
+  statValue: { fontSize: 22, fontFamily: "Inter_700Bold", marginBottom: 2 },
+  statLabel: {
+    fontSize: 10,
+    fontFamily: "Inter_500Medium",
+    textAlign: "center",
+  },
   statDivider: { width: 1, height: 30 },
   section: { marginTop: 22, paddingHorizontal: 16 },
-  sectionHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
-  sectionTitle: { fontSize: 11, fontFamily: "Inter_600SemiBold", letterSpacing: 1.1 },
-  addBtn: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 },
+  sectionHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    letterSpacing: 1.1,
+  },
+  addBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
   addBtnText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
   loyaltyCard: { borderRadius: 18, overflow: "hidden", borderWidth: 1.5 },
   loyaltyGradient: { padding: 18 },
-  loyaltyTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 },
-  loyaltyTitle: { color: "rgba(255,255,255,0.75)", fontSize: 12, fontFamily: "Inter_500Medium", marginBottom: 4 },
-  loyaltyPointsRow: { flexDirection: "row", alignItems: "baseline", gap: 4 },
-  loyaltyPoints: { color: "#FFFFFF", fontSize: 36, fontFamily: "Inter_700Bold" },
-  loyaltyMax: { color: "rgba(255,255,255,0.5)", fontSize: 16, fontFamily: "Inter_400Regular" },
-  loyaltyStarBox: {
-    width: 56, height: 56, borderRadius: 28, backgroundColor: "rgba(255,255,255,0.12)",
-    justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "rgba(255,215,0,0.3)",
+  loyaltyTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 14,
   },
-  progressTrack: { height: 6, backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 3, marginBottom: 12, overflow: "hidden" },
+  loyaltyTitle: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 12,
+    fontFamily: "Inter_500Medium",
+    marginBottom: 4,
+  },
+  loyaltyPointsRow: { flexDirection: "row", alignItems: "baseline", gap: 4 },
+  loyaltyPoints: {
+    color: "#FFFFFF",
+    fontSize: 36,
+    fontFamily: "Inter_700Bold",
+  },
+  loyaltyMax: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 16,
+    fontFamily: "Inter_400Regular",
+  },
+  loyaltyStarBox: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "rgba(255,215,0,0.3)",
+  },
+  progressTrack: {
+    height: 6,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 3,
+    marginBottom: 12,
+    overflow: "hidden",
+  },
   progressFill: { height: "100%", backgroundColor: "#FFD700", borderRadius: 3 },
-  tierRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 12 },
+  tierRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
   tierItem: { alignItems: "center", gap: 3 },
-  tierDot: { width: 20, height: 20, borderRadius: 10, justifyContent: "center", alignItems: "center" },
+  tierDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   tierLabel: { fontSize: 10, fontFamily: "Inter_700Bold" },
   tierDiscount: { fontSize: 9, fontFamily: "Inter_500Medium" },
   redeemBanner: {
-    flexDirection: "row", alignItems: "center", gap: 7, backgroundColor: "rgba(255,215,0,0.15)",
-    borderRadius: 8, padding: 8, borderWidth: 1, borderColor: "rgba(255,215,0,0.3)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    backgroundColor: "rgba(255,215,0,0.15)",
+    borderRadius: 8,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255,215,0,0.3)",
   },
-  redeemText: { color: "#FFD700", fontSize: 12, fontFamily: "Inter_600SemiBold", flex: 1 },
-  earnMoreText: { color: "rgba(255,255,255,0.6)", fontSize: 11, fontFamily: "Inter_400Regular", textAlign: "center" },
+  redeemText: {
+    color: "#FFD700",
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
+    flex: 1,
+  },
+  earnMoreText: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+  },
   earnInfo: { flexDirection: "row", alignItems: "center", gap: 8, padding: 12 },
-  earnInfoText: { flex: 1, fontSize: 11, fontFamily: "Inter_400Regular", lineHeight: 16 },
-  emptyCard: {
-    flexDirection: "row", alignItems: "center", gap: 10, padding: 16,
-    borderRadius: 14, borderWidth: 1,
+  earnInfoText: {
+    flex: 1,
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    lineHeight: 16,
   },
-  emptyCardText: { flex: 1, fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 18 },
+  emptyCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  emptyCardText: {
+    flex: 1,
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    lineHeight: 18,
+  },
   addrList: { borderRadius: 14, borderWidth: 1, overflow: "hidden" },
-  addrCard: { flexDirection: "row", alignItems: "flex-start", padding: 14, gap: 10 },
-  addrIcon: { width: 36, height: 36, borderRadius: 10, justifyContent: "center", alignItems: "center", marginTop: 1 },
+  addrCard: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 14,
+    gap: 10,
+  },
+  addrIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 1,
+  },
   addrContent: { flex: 1 },
-  addrTopRow: { flexDirection: "row", alignItems: "center", gap: 7, marginBottom: 3 },
+  addrTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    marginBottom: 3,
+  },
   addrLabel: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
   defaultBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
-  defaultBadgeText: { color: "#FFF", fontSize: 9, fontFamily: "Inter_700Bold", letterSpacing: 0.5 },
+  defaultBadgeText: {
+    color: "#FFF",
+    fontSize: 9,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.5,
+  },
   addrText: { fontSize: 12, fontFamily: "Inter_400Regular", lineHeight: 17 },
-  addrActions: { flexDirection: "row", gap: 6, alignItems: "center", marginTop: 2 },
-  addrBtn: { width: 28, height: 28, borderRadius: 8, borderWidth: 1, justifyContent: "center", alignItems: "center" },
-  menuCard: { borderRadius: 14, borderWidth: 1, overflow: "hidden", backgroundColor: "#FFFFFF" },
-  settingRow: { flexDirection: "row", alignItems: "center", padding: 14, gap: 12, borderBottomWidth: 1 },
-  settingIcon: { width: 36, height: 36, borderRadius: 10, justifyContent: "center", alignItems: "center" },
+  addrActions: {
+    flexDirection: "row",
+    gap: 6,
+    alignItems: "center",
+    marginTop: 2,
+  },
+  addrBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+  },
+  settingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 14,
+    gap: 12,
+    borderBottomWidth: 1,
+  },
+  settingIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   settingInfo: { flex: 1 },
   settingLabel: { fontSize: 14, fontFamily: "Inter_500Medium" },
   settingValue: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 1 },
@@ -559,8 +1065,32 @@ const styles = StyleSheet.create({
   langBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   langBadgeText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
   brandFooter: { alignItems: "center", paddingVertical: 30, gap: 7 },
-  brandCircle: { width: 56, height: 56, borderRadius: 28, justifyContent: "center", alignItems: "center", marginBottom: 4 },
-  brandText: { color: "#FFFFFF", fontSize: 18, fontFamily: "Inter_700Bold", letterSpacing: 2 },
+  brandCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  brandCircleRed: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  brandText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 2,
+  },
   brandName: { fontSize: 15, fontFamily: "Inter_700Bold" },
-  brandTagline: { fontSize: 12, fontFamily: "Inter_400Regular", fontStyle: "italic" },
+  brandTagline: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    fontStyle: "italic",
+  },
 });

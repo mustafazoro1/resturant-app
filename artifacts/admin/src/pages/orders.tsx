@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { CheckCircle2, XCircle, Clock, ChefHat, Search, MapPin, Truck, BellRing, PackageSearch, Activity, Inbox, Utensils } from "lucide-react";
 
 export default function Orders() {
@@ -29,6 +29,16 @@ export default function Orders() {
     );
   };
 
+  const parseOrderCreatedAt = (value: string) => {
+    const parsed = parseISO(value);
+    return isValid(parsed) ? parsed : undefined;
+  };
+
+  const formatOrderTime = (value: string) => {
+    const date = parseOrderCreatedAt(value);
+    return date ? format(date, "h:mm a") : "Unknown time";
+  };
+
   const branches = useMemo(() => {
     if (!orders) return [];
     return Array.from(new Set(orders.map(o => o.branch)));
@@ -41,7 +51,11 @@ export default function Orders() {
       const matchesStatus = statusFilter === "all" || o.status === statusFilter;
       const matchesBranch = branchFilter === "all" || o.branch === branchFilter;
       return matchesSearch && matchesStatus && matchesBranch;
-    }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }).sort((a, b) => {
+      const aDate = parseOrderCreatedAt(a.createdAt);
+      const bDate = parseOrderCreatedAt(b.createdAt);
+      return (bDate?.getTime() ?? 0) - (aDate?.getTime() ?? 0);
+    });
   }, [orders, search, statusFilter, branchFilter]);
 
   const getStatusColor = (status: string) => {
@@ -171,7 +185,7 @@ export default function Orders() {
                         <div className="font-bold text-2xl text-primary">Rs {order.total}</div>
                         <div className="text-sm font-medium text-muted-foreground mt-1 flex items-center justify-end gap-1">
                           <Clock className="w-3 h-3" />
-                          {format(new Date(order.createdAt), "h:mm a")}
+                          {formatOrderTime(order.createdAt)}
                         </div>
                       </div>
                     </div>
