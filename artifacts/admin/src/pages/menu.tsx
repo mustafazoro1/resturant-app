@@ -93,6 +93,9 @@ export default function Menu() {
     null,
   );
   const [imageUrlsList, setImageUrlsList] = useState<string[]>([]);
+  const [urlInputValues, setUrlInputValues] = useState<Record<number, string>>(
+    {},
+  );
 
   const activeDeals = useMemo(() => {
     return menuItemsArray
@@ -216,12 +219,34 @@ export default function Menu() {
       }
       return next;
     });
+    setUrlInputValues((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
   };
 
   const addImageSlot = () => {
     if (imageUrlsList.length < 10) {
       setImageUrlsList((prev) => [...prev, ""]);
     }
+  };
+
+  const applyUrlAt = (idx: number) => {
+    const url = (urlInputValues[idx] ?? "").trim();
+    if (!url) return;
+    setImageUrlsList((prev) => {
+      const next = [...prev];
+      if (idx < next.length) {
+        next[idx] = url;
+      } else {
+        while (next.length <= idx) next.push("");
+        next[idx] = url;
+      }
+      return next;
+    });
+    if (idx === 0) form.setValue("imageUrl", url);
+    setUrlInputValues((prev) => ({ ...prev, [idx]: "" }));
   };
 
   const onSubmit = (values: MenuItemFormValues) => {
@@ -244,6 +269,7 @@ export default function Menu() {
             setEditingItemId(null);
             form.reset();
             setImageUrlsList([]);
+            setUrlInputValues({});
           },
         },
       );
@@ -258,6 +284,7 @@ export default function Menu() {
             setIsAddOpen(false);
             form.reset();
             setImageUrlsList([]);
+            setUrlInputValues({});
           },
         },
       );
@@ -302,6 +329,7 @@ export default function Menu() {
     if (!open) {
       form.reset();
       setImageUrlsList([]);
+      setUrlInputValues({});
     }
     setIsAddOpen(open);
   };
@@ -311,6 +339,7 @@ export default function Menu() {
       setEditingItemId(null);
       form.reset();
       setImageUrlsList([]);
+      setUrlInputValues({});
     }
   };
 
@@ -481,90 +510,144 @@ export default function Menu() {
                     )}
                   />
 
-                  {/* Multi-Image Upload Gallery */}
+                  {/* Multi-Image Gallery — URL paste (file upload coming soon) */}
                   <div className="space-y-3">
-                    <div className="font-semibold text-sm">
-                      Product Images{" "}
-                      <span className="text-muted-foreground font-normal">
-                        (up to 10 · auto-scrolls in app)
-                      </span>
+                    <div className="flex items-center justify-between">
+                      <div className="font-semibold text-sm">
+                        Product Images{" "}
+                        <span className="text-muted-foreground font-normal">
+                          (up to 10 · auto-scrolls in app)
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-full">
+                        <Loader2 className="w-3 h-3" />
+                        File upload in progress
+                      </div>
                     </div>
-                    <div className="grid grid-cols-4 gap-3">
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {imageUrlsList.map((url, idx) => (
                         <div key={idx} className="relative group">
-                          <div className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/20 overflow-hidden flex items-center justify-center">
-                            {uploadingImageIndex === idx ? (
-                              <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                            ) : url ? (
-                              <img
-                                src={url}
-                                alt={`Image ${idx + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <label className="cursor-pointer flex flex-col items-center gap-1 p-2">
-                                <UploadCloud className="w-5 h-5 text-muted-foreground/50" />
-                                <span className="text-[10px] text-muted-foreground/60">
-                                  Upload
-                                </span>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={(e) =>
-                                    handleMultiImageUpload(e, idx)
-                                  }
-                                  disabled={uploadingImageIndex !== null}
+                          <div className="aspect-square rounded-xl border-2 border-dashed border-muted-foreground/25 overflow-hidden flex flex-col bg-muted/10">
+                            {url ? (
+                              /* ── Filled: show image ── */
+                              <>
+                                <img
+                                  src={url}
+                                  alt={`Image ${idx + 1}`}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = "";
+                                  }}
                                 />
-                              </label>
+                                {/* Hover controls */}
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => removeImageAt(idx)}
+                                    className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center hover:bg-destructive hover:text-white transition-colors"
+                                    title="Remove image"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                                {idx === 0 && (
+                                  <span className="absolute bottom-1.5 left-1.5 text-[9px] bg-primary text-white px-1.5 py-0.5 rounded font-bold shadow">
+                                    MAIN
+                                  </span>
+                                )}
+                              </>
+                            ) : (
+                              /* ── Empty: disabled upload + URL paste ── */
+                              <div className="flex flex-col h-full p-2 gap-2">
+                                {/* Disabled file upload indicator */}
+                                <div className="flex flex-col items-center gap-0.5 pt-1 opacity-40 select-none cursor-not-allowed">
+                                  <UploadCloud className="w-5 h-5 text-muted-foreground" />
+                                  <span className="text-[9px] text-muted-foreground text-center leading-tight">
+                                    File Upload
+                                  </span>
+                                  <span className="text-[8px] font-bold bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full mt-0.5">
+                                    In Progress
+                                  </span>
+                                </div>
+
+                                <div className="text-[9px] text-center text-muted-foreground/60 font-medium">
+                                  — or paste URL —
+                                </div>
+
+                                {/* URL input */}
+                                <div className="flex flex-col gap-1 mt-auto">
+                                  <input
+                                    type="url"
+                                    placeholder="https://i.ibb.co/…"
+                                    value={urlInputValues[idx] ?? ""}
+                                    onChange={(e) =>
+                                      setUrlInputValues((prev) => ({
+                                        ...prev,
+                                        [idx]: e.target.value,
+                                      }))
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        applyUrlAt(idx);
+                                      }
+                                    }}
+                                    className="w-full text-[10px] border border-input rounded-md px-1.5 py-1 bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => applyUrlAt(idx)}
+                                    disabled={
+                                      !(urlInputValues[idx] ?? "").trim()
+                                    }
+                                    className="w-full text-[10px] font-semibold py-1 rounded-md bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                  >
+                                    Set Image
+                                  </button>
+                                </div>
+                              </div>
                             )}
                           </div>
-                          {url && (
-                            <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <label className="cursor-pointer w-5 h-5 rounded bg-background/90 flex items-center justify-center shadow">
-                                <UploadCloud className="w-3 h-3 text-primary" />
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={(e) =>
-                                    handleMultiImageUpload(e, idx)
-                                  }
-                                  disabled={uploadingImageIndex !== null}
-                                />
-                              </label>
-                              <button
-                                type="button"
-                                onClick={() => removeImageAt(idx)}
-                                className="w-5 h-5 rounded bg-background/90 flex items-center justify-center shadow"
-                              >
-                                <Trash2 className="w-3 h-3 text-destructive" />
-                              </button>
-                            </div>
-                          )}
-                          {idx === 0 && url && (
-                            <span className="absolute bottom-1 left-1 text-[9px] bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
-                              Main
-                            </span>
-                          )}
                         </div>
                       ))}
+
+                      {/* Add new slot */}
                       {imageUrlsList.length < 10 && (
                         <button
                           type="button"
                           onClick={addImageSlot}
-                          className="aspect-square rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 flex flex-col items-center justify-center gap-1 hover:bg-primary/10 transition-colors"
+                          className="aspect-square rounded-xl border-2 border-dashed border-primary/25 bg-primary/5 flex flex-col items-center justify-center gap-1.5 hover:bg-primary/10 hover:border-primary/40 transition-colors"
                         >
-                          <Plus className="w-5 h-5 text-primary/60" />
-                          <span className="text-[10px] text-primary/60 font-medium">
-                            Add Image
+                          <Plus className="w-5 h-5 text-primary/50" />
+                          <span className="text-[10px] text-primary/60 font-semibold">
+                            Add Slot
                           </span>
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      First image is the main product image. Images auto-scroll
-                      in the app every 3s.
+
+                    <p className="text-xs text-muted-foreground bg-muted/30 rounded-lg px-3 py-2">
+                      💡 <strong>Tip:</strong> Upload your images to{" "}
+                      <a
+                        href="https://imgbb.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline"
+                      >
+                        ImgBB
+                      </a>{" "}
+                      or{" "}
+                      <a
+                        href="https://imgur.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline"
+                      >
+                        Imgur
+                      </a>{" "}
+                      for free, then paste the direct link above. First image is
+                      the main product photo.
                     </p>
                   </div>
 
@@ -812,90 +895,144 @@ export default function Menu() {
                     )}
                   />
 
-                  {/* Multi-Image Upload Gallery */}
+                  {/* Multi-Image Gallery — URL paste (file upload coming soon) */}
                   <div className="space-y-3">
-                    <div className="font-semibold text-sm">
-                      Product Images{" "}
-                      <span className="text-muted-foreground font-normal">
-                        (up to 10 · auto-scrolls in app)
-                      </span>
+                    <div className="flex items-center justify-between">
+                      <div className="font-semibold text-sm">
+                        Product Images{" "}
+                        <span className="text-muted-foreground font-normal">
+                          (up to 10 · auto-scrolls in app)
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-full">
+                        <Loader2 className="w-3 h-3" />
+                        File upload in progress
+                      </div>
                     </div>
-                    <div className="grid grid-cols-4 gap-3">
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {imageUrlsList.map((url, idx) => (
                         <div key={idx} className="relative group">
-                          <div className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/20 overflow-hidden flex items-center justify-center">
-                            {uploadingImageIndex === idx ? (
-                              <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                            ) : url ? (
-                              <img
-                                src={url}
-                                alt={`Image ${idx + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <label className="cursor-pointer flex flex-col items-center gap-1 p-2">
-                                <UploadCloud className="w-5 h-5 text-muted-foreground/50" />
-                                <span className="text-[10px] text-muted-foreground/60">
-                                  Upload
-                                </span>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={(e) =>
-                                    handleMultiImageUpload(e, idx)
-                                  }
-                                  disabled={uploadingImageIndex !== null}
+                          <div className="aspect-square rounded-xl border-2 border-dashed border-muted-foreground/25 overflow-hidden flex flex-col bg-muted/10">
+                            {url ? (
+                              /* ── Filled: show image ── */
+                              <>
+                                <img
+                                  src={url}
+                                  alt={`Image ${idx + 1}`}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = "";
+                                  }}
                                 />
-                              </label>
+                                {/* Hover controls */}
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => removeImageAt(idx)}
+                                    className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center hover:bg-destructive hover:text-white transition-colors"
+                                    title="Remove image"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                                {idx === 0 && (
+                                  <span className="absolute bottom-1.5 left-1.5 text-[9px] bg-primary text-white px-1.5 py-0.5 rounded font-bold shadow">
+                                    MAIN
+                                  </span>
+                                )}
+                              </>
+                            ) : (
+                              /* ── Empty: disabled upload + URL paste ── */
+                              <div className="flex flex-col h-full p-2 gap-2">
+                                {/* Disabled file upload indicator */}
+                                <div className="flex flex-col items-center gap-0.5 pt-1 opacity-40 select-none cursor-not-allowed">
+                                  <UploadCloud className="w-5 h-5 text-muted-foreground" />
+                                  <span className="text-[9px] text-muted-foreground text-center leading-tight">
+                                    File Upload
+                                  </span>
+                                  <span className="text-[8px] font-bold bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full mt-0.5">
+                                    In Progress
+                                  </span>
+                                </div>
+
+                                <div className="text-[9px] text-center text-muted-foreground/60 font-medium">
+                                  — or paste URL —
+                                </div>
+
+                                {/* URL input */}
+                                <div className="flex flex-col gap-1 mt-auto">
+                                  <input
+                                    type="url"
+                                    placeholder="https://i.ibb.co/…"
+                                    value={urlInputValues[idx] ?? ""}
+                                    onChange={(e) =>
+                                      setUrlInputValues((prev) => ({
+                                        ...prev,
+                                        [idx]: e.target.value,
+                                      }))
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        applyUrlAt(idx);
+                                      }
+                                    }}
+                                    className="w-full text-[10px] border border-input rounded-md px-1.5 py-1 bg-background focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => applyUrlAt(idx)}
+                                    disabled={
+                                      !(urlInputValues[idx] ?? "").trim()
+                                    }
+                                    className="w-full text-[10px] font-semibold py-1 rounded-md bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                  >
+                                    Set Image
+                                  </button>
+                                </div>
+                              </div>
                             )}
                           </div>
-                          {url && (
-                            <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <label className="cursor-pointer w-5 h-5 rounded bg-background/90 flex items-center justify-center shadow">
-                                <UploadCloud className="w-3 h-3 text-primary" />
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={(e) =>
-                                    handleMultiImageUpload(e, idx)
-                                  }
-                                  disabled={uploadingImageIndex !== null}
-                                />
-                              </label>
-                              <button
-                                type="button"
-                                onClick={() => removeImageAt(idx)}
-                                className="w-5 h-5 rounded bg-background/90 flex items-center justify-center shadow"
-                              >
-                                <Trash2 className="w-3 h-3 text-destructive" />
-                              </button>
-                            </div>
-                          )}
-                          {idx === 0 && url && (
-                            <span className="absolute bottom-1 left-1 text-[9px] bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
-                              Main
-                            </span>
-                          )}
                         </div>
                       ))}
+
+                      {/* Add new slot */}
                       {imageUrlsList.length < 10 && (
                         <button
                           type="button"
                           onClick={addImageSlot}
-                          className="aspect-square rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 flex flex-col items-center justify-center gap-1 hover:bg-primary/10 transition-colors"
+                          className="aspect-square rounded-xl border-2 border-dashed border-primary/25 bg-primary/5 flex flex-col items-center justify-center gap-1.5 hover:bg-primary/10 hover:border-primary/40 transition-colors"
                         >
-                          <Plus className="w-5 h-5 text-primary/60" />
-                          <span className="text-[10px] text-primary/60 font-medium">
-                            Add Image
+                          <Plus className="w-5 h-5 text-primary/50" />
+                          <span className="text-[10px] text-primary/60 font-semibold">
+                            Add Slot
                           </span>
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      First image is the main product image. Images auto-scroll
-                      in the app every 3s.
+
+                    <p className="text-xs text-muted-foreground bg-muted/30 rounded-lg px-3 py-2">
+                      💡 <strong>Tip:</strong> Upload your images to{" "}
+                      <a
+                        href="https://imgbb.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline"
+                      >
+                        ImgBB
+                      </a>{" "}
+                      or{" "}
+                      <a
+                        href="https://imgur.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline"
+                      >
+                        Imgur
+                      </a>{" "}
+                      for free, then paste the direct link above. First image is
+                      the main product photo.
                     </p>
                   </div>
 

@@ -47,3 +47,10 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment variables (contain Firebase keys)
+.env
+.env.local
+.env.production
+artifacts/admin/.env
+artifacts/mobile/.env
