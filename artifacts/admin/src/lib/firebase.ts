@@ -1,13 +1,8 @@
 /**
  * Firebase configuration – RFC Admin Dashboard
  *
- * This file initialises the Firebase app and exports a Firestore `db` instance.
+ * This file initializes the Firebase app and exports a Firestore `db` instance.
  * Reads credentials from Vite environment variables (VITE_FIREBASE_*).
- *
- * ⚠️  Install firebase before using:
- *       pnpm add firebase          (from workspace root)
- *       – or –
- *       cd artifacts/admin && npm install firebase
  */
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -27,18 +22,39 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-/** Singleton Firebase app — safe across Vite HMR reloads */
-export const firebaseApp =
-  getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// Log environment variables for debugging (only in development)
+if (import.meta.env.DEV) {
+  console.log("Firebase Config (DEV):", firebaseConfig);
+}
 
-/** Firestore database — use this for reading/writing RFC data */
-export const db = getFirestore(firebaseApp);
+// Top-level exported bindings
+let firebaseApp: any = null;
+let db: any = null;
 
-// Browser-only analytics (no-op in SSR / Node)
-isSupported()
-  .then((ok) => {
-    if (ok) getAnalytics(firebaseApp);
-  })
-  .catch(() => {});
+try {
+  // Create or reuse the Firebase app instance
+  firebaseApp = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
+  // Initialize Firestore
+  db = getFirestore(firebaseApp);
+
+  // Initialize Analytics if supported (async check)
+  isSupported()
+    .then((supported) => {
+      if (supported) {
+        try {
+          getAnalytics(firebaseApp);
+        } catch (err) {
+          console.warn("Failed to initialize Firebase Analytics:", err);
+        }
+      }
+    })
+    .catch((err) => {
+      if (import.meta.env.DEV) console.warn("isSupported() failed:", err);
+    });
+} catch (error) {
+  console.error("Failed to initialize Firebase:", error);
+}
+
+export { firebaseApp, db };
 export default firebaseApp;

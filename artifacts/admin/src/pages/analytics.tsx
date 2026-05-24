@@ -1,6 +1,6 @@
 import { Shell } from "@/components/layout/Shell";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useGetAdminAnalytics } from "@workspace/api-client-react";
+import { useGetAdminAnalytics } from "@/lib/api-client-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
 import { format } from "date-fns";
 

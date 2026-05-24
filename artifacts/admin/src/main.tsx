@@ -1,4 +1,4 @@
-// Initialize Firebase on app start
+// Firebase is configured in src/lib/firebase.ts
 import "@/lib/firebase";
 import { createRoot } from "react-dom/client";
 import App from "./App";

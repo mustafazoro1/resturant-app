@@ -8,7 +8,7 @@ import {
   getListAdminMenuItemsQueryKey,
   useRequestUploadUrl,
   useListAdminCategories,
-} from "@workspace/api-client-react";
+} from "@/lib/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

@@ -12,7 +12,7 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 const isDev = process.env.NODE_ENV !== "production";
-const basePath = isDev ? "/" : (process.env.BASE_PATH || "/admin/");
+const basePath = process.env.BASE_PATH || "/";
 
 export default defineConfig({
   base: basePath,

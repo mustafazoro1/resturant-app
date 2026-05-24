@@ -1,6 +1,6 @@
 import { Shell } from "@/components/layout/Shell";
 import { useState, useMemo } from "react";
-import { useListAdminOrders, useUpdateAdminOrderStatus, getListAdminOrdersQueryKey } from "@workspace/api-client-react";
+import { useListAdminOrders, useUpdateAdminOrderStatus, getListAdminOrdersQueryKey } from "@/lib/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
