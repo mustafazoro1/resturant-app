@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { MENU_ITEMS, type MenuItem } from "@/constants/data";
-import { getApiBase } from "@/lib/apiBase";
 import { apiToMenuItem, type ApiMenuItem } from "@/lib/menuUtils";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 type MenuContextValue = {
   menuItems: MenuItem[];
@@ -18,35 +19,34 @@ export function MenuProvider({ children }: { children: React.ReactNode }) {
   const [loaded, setLoaded] = useState(false);
   const [tick, setTick] = useState(0);
 
-  const apiBase = getApiBase();
-
   useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      if (!apiBase) {
+    console.log("🔥 Initializing Firestore real-time menu listener...");
+    
+    // Subscribe to real-time changes in menuItems collection
+    const menuCollection = collection(db, "menuItems");
+    const unsubscribe = onSnapshot(
+      menuCollection,
+      (querySnapshot) => {
+        const items: ApiMenuItem[] = [];
+        querySnapshot.forEach((doc) => {
+          items.push({ id: doc.id, ...doc.data() } as ApiMenuItem);
+        });
+        console.log(`✅ Loaded ${items.length} menu items from Firestore`);
+        setApiItems(items);
         setLoaded(true);
-        return;
+      },
+      (error) => {
+        console.error("❌ Firestore Menu Subscription failed:", error);
+        // Set loaded true to fall back to static/bundled menu without freezing the UI
+        setLoaded(true);
       }
-      try {
-        const res = await fetch(`${apiBase}/api/mobile/menu`);
-        const data = (await res.json()) as ApiMenuItem[];
-        if (!cancelled && Array.isArray(data)) {
-          setApiItems(data);
-        }
-      } catch {
-        // fall back to bundled menu
-      } finally {
-        if (!cancelled) setLoaded(true);
-      }
-    }
+    );
 
-    setLoaded(false);
-    load();
     return () => {
-      cancelled = true;
+      console.log("🔌 Cleaning up Firestore menu listener...");
+      unsubscribe();
     };
-  }, [apiBase, tick]);
+  }, [tick]);
 
   const menuItems = useMemo<MenuItem[]>(() => {
     if (!apiItems.length) return MENU_ITEMS;
